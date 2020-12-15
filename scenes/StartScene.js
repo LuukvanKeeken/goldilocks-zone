@@ -5,6 +5,7 @@ class StartScene extends Phaser.Scene{
 
     preload(){
         this.load.image('background', './media/space_background.jpg');
+        this.time.advancedTiming = true;
     }
 
     create(){
@@ -35,5 +36,16 @@ class StartScene extends Phaser.Scene{
         });
         centerText(gameState.clickAnywhere);
 
+        gameState.bodies.planet = this.add.circle(500, 500, 15, 0xffffff);
+        gameState.bodies.star = this.add.circle(window.innerWidth/2, window.innerHeight/2, 30, 0xfcd440);
+        
+
+    }
+
+    update(){
+        var period = this.time.now * 0.001;
+        var radius = 150;
+        gameState.bodies.planet.x = (window.innerWidth/2) + Math.cos(period)*radius;
+        gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(period)*radius;
     }
 }

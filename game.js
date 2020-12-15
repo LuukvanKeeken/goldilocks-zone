@@ -2,7 +2,11 @@ const gameState = {
     temperature: 0,
     size: 0,
     eccentricity: 0,
-    orbit_diameter: 0
+    orbit_diameter: 0,
+    bodies: {},
+    factor: 1,
+    period: 0,
+    radius: 0
 }
 
 function centerText(text){
