@@ -3,13 +3,19 @@ class StartScene extends Phaser.Scene{
         super({key: 'StartScene'});
     }
 
+    transitionToMain(){
+        this.scene.stop('StartScene');
+        this.scene.start('MainScene');
+    }
+
     preload(){
         this.load.image('background', './media/space_background.jpg');
         this.time.advancedTiming = true;
     }
 
     create(){
-        this.add.image(900, 100, 'background');
+        console.log(gameState);
+        gameState.background = this.add.image(900, 100, 'background').setInteractive();
 
         gameState.goldilocksZone = this.add.text(window.innerWidth/2, window.innerHeight/2 - 400, "The Goldilocks Zone", {
             fontSize: '80px',
@@ -40,7 +46,6 @@ class StartScene extends Phaser.Scene{
         /* Orbit line of the planet. */
         gameState.bodies.orbit = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, 300, 300);
         gameState.bodies.orbit.setStrokeStyle(3, 0xffffff, 0.8);
-
         /* Circle representing the planet. */
         gameState.bodies.planet = this.add.circle(500, 500, 15, 0xffffff);
 
@@ -53,17 +58,27 @@ class StartScene extends Phaser.Scene{
         gameState.bodies.starAtm2.alpha = 0.2;
         gameState.bodies.star = this.add.circle(window.innerWidth/2, window.innerHeight/2, 30, 0xfcd440);
 
-        // this.input.on('pointerup', () => {
-        //     gameState.radius += 50;
-        // });
+        
+        /* When there is a mouse click, the text fades out, and at the end
+         * of the tween, StartScene stops and MainScene is started. */
+        this.input.on('pointerdown', () => {
+            var tween = this.tweens.add({
+                targets: [gameState.goldilocksZone, gameState.byLuuk, gameState.clickAnywhere],
+                alpha: 0,
+                duration: 750,
+                ease: 'Linear',
+                onComplete: function(){
+                    this.scene.stop('StartScene');
+                    this.scene.start('MainScene');
+                }.bind(this)
+            }, this);
+        });
 
     }
 
     update(){
-        var period = this.time.now * 0.001;
-        
-        //var radius = 150;
-        gameState.bodies.planet.x = (window.innerWidth/2) + Math.cos(period)*gameState.radius;
-        gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(period)*gameState.radius;
+        gameState.period = this.time.now * 0.001;
+        gameState.bodies.planet.x = (window.innerWidth/2) + Math.cos(gameState.period)*gameState.radius;
+        gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(gameState.period)*gameState.radius;
     }
 }

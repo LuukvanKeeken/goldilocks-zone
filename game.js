@@ -1,4 +1,5 @@
 const gameState = {
+    introTexts: {},
     temperature: 0,
     size: 0,
     eccentricity: 0,
@@ -19,7 +20,7 @@ const config = {
     width: window.innerWidth,
     height: window.innerHeight,
     backgroundColor: "#000000",
-    scene: [StartScene]
+    scene: [StartScene, MainScene]
 }
 
 const game = new Phaser.Game(config);
