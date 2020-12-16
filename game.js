@@ -6,7 +6,8 @@ const gameState = {
     bodies: {},
     factor: 1,
     period: 0,
-    radius: 0
+    radius: 150,
+    direction: 1
 }
 
 function centerText(text){

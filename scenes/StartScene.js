@@ -36,16 +36,27 @@ class StartScene extends Phaser.Scene{
         });
         centerText(gameState.clickAnywhere);
 
+        /* Size of c can be calculated with c = sqrt(a^2 - b^2). */
         gameState.bodies.planet = this.add.circle(500, 500, 15, 0xffffff);
+        gameState.bodies.starAtm1 = this.add.circle(window.innerWidth/2, window.innerHeight/2, 35, 0xfcd440);
+        gameState.bodies.starAtm1.alpha = 0.3;
+        gameState.bodies.starAtm3 = this.add.circle(window.innerWidth/2, window.innerHeight/2, 37.5, 0xfcd440);
+        gameState.bodies.starAtm3.alpha = 0.25;
+        gameState.bodies.starAtm2 = this.add.circle(window.innerWidth/2, window.innerHeight/2, 40, 0xfcd440);
+        gameState.bodies.starAtm2.alpha = 0.2;
         gameState.bodies.star = this.add.circle(window.innerWidth/2, window.innerHeight/2, 30, 0xfcd440);
-        
+
+        // this.input.on('pointerup', () => {
+        //     gameState.radius += 50;
+        // });
 
     }
 
     update(){
         var period = this.time.now * 0.001;
-        var radius = 150;
-        gameState.bodies.planet.x = (window.innerWidth/2) + Math.cos(period)*radius;
-        gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(period)*radius;
+        
+        //var radius = 150;
+        gameState.bodies.planet.x = (window.innerWidth/2) + Math.cos(period)*gameState.radius;
+        gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(period)*gameState.radius;
     }
 }
