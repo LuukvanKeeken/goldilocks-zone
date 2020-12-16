@@ -37,7 +37,14 @@ class StartScene extends Phaser.Scene{
         centerText(gameState.clickAnywhere);
 
         /* Size of c can be calculated with c = sqrt(a^2 - b^2). */
+        /* Orbit line of the planet. */
+        gameState.bodies.orbit = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, 300, 300);
+        gameState.bodies.orbit.setStrokeStyle(3, 0xffffff, 0.8);
+
+        /* Circle representing the planet. */
         gameState.bodies.planet = this.add.circle(500, 500, 15, 0xffffff);
+
+        /* Circles representing the Sun and its atmosphere. */
         gameState.bodies.starAtm1 = this.add.circle(window.innerWidth/2, window.innerHeight/2, 35, 0xfcd440);
         gameState.bodies.starAtm1.alpha = 0.3;
         gameState.bodies.starAtm3 = this.add.circle(window.innerWidth/2, window.innerHeight/2, 37.5, 0xfcd440);
