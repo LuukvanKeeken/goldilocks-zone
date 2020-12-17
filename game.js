@@ -7,12 +7,13 @@ const gameState = {
     bodies: {},
     factor: 1,
     period: 0,
-    radius: 150,
-    direction: 1
+    radiusMaj: 150,
+    radiusMin: 150,
+    eccentricity: 0
 }
 
-function centerText(text){
-    text.x = window.innerWidth/2 - (text.width/2);
+function centerText(text, centerCoordinate){
+    text.x = centerCoordinate - (text.width/2);
 }
 
 const config = {

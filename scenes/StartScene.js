@@ -24,7 +24,7 @@ class StartScene extends Phaser.Scene{
             stroke: '#000000',
             strokeThickness: 2
         });
-        centerText(gameState.goldilocksZone);
+        centerText(gameState.goldilocksZone, window.innerWidth/2);
 
         gameState.byLuuk = this.add.text(window.innerWidth/2, window.innerHeight/2 + 300, "by Luuk van Keeken", {
             fontSize: '30px',
@@ -32,7 +32,7 @@ class StartScene extends Phaser.Scene{
             stroke: '#000000',
             strokeThickness: 2
         });
-        centerText(gameState.byLuuk);
+        centerText(gameState.byLuuk, window.innerWidth/2);
 
         gameState.clickAnywhere = this.add.text(window.innerWidth/2, window.innerHeight/2 + 400, "click anywhere to continue", {
             fontSize: '40px',
@@ -40,7 +40,7 @@ class StartScene extends Phaser.Scene{
             stroke: '#000000',
             strokeThickness: 2
         });
-        centerText(gameState.clickAnywhere);
+        centerText(gameState.clickAnywhere, window.innerWidth/2);
 
         /* Size of c can be calculated with c = sqrt(a^2 - b^2). */
         /* Orbit line of the planet. */
@@ -77,8 +77,8 @@ class StartScene extends Phaser.Scene{
     }
 
     update(){
-        gameState.period = this.time.now * 0.001;
-        gameState.bodies.planet.x = (window.innerWidth/2) + Math.cos(gameState.period)*gameState.radius;
-        gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(gameState.period)*gameState.radius;
+        gameState.period += 0.04;
+        gameState.bodies.planet.x = (window.innerWidth/2) + Math.cos(gameState.period)*gameState.radiusMaj;
+        gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(gameState.period)*gameState.radiusMaj;
     }
 }
