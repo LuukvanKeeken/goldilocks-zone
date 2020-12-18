@@ -21,12 +21,13 @@ class MainScene extends Phaser.Scene{
 
         /* Create slider and text for changing the radius of the orbit. */
         this.img = this.add.image(200, window.innerHeight - 100, 'dot').setScale(5, 5);
-        var orbitRadiusText = this.add.text(this.img.x, this.img.y + 20, '', {
+        var orbitRadiusText = this.add.text(this.img.x, this.img.y + 20, 'Orbit radius: ' + Math.round((100+0.25*200)*10)/10, {
             fontSize: '20px',
             fill: '#ffffff',
             stroke: '#000000',
             strokeThickness: 2
         });
+        centerText(orbitRadiusText, 200);
         this.img.sliderRadius = this.plugins.get('rexsliderplugin').add(this.img, {
             endPoints: [{
                     x: this.img.x - 100,
@@ -37,24 +38,21 @@ class MainScene extends Phaser.Scene{
                     y: this.img.y
                 }
             ],
-            value: 0.25, 
-            valuechangeCallback: function (value) {
-                orbitRadiusText.text = 'Orbit radius: ' + Math.round((100+value*200)*10)/10;
-                centerText(orbitRadiusText, 200);
-            }
+            value: 0.25
         });
         this.add.graphics()
             .lineStyle(3, 0xffffff, 1)
             .strokePoints(this.img.sliderRadius.endPoints);
 
-        
+        /* Create slider and text for the eccentricity. */
         this.img2 = this.add.image(window.innerWidth/2, window.innerHeight - 100, 'dot').setScale(5, 5);
-        var eccText = this.add.text(this.img2.x, this.img2.y + 20, '', {
+        var eccText = this.add.text(this.img2.x, this.img2.y + 20, 'Eccentricity: ' + Math.round(gameState.eccentricity*100)/100, {
             fontSize: '20px',
             fill: '#ffffff',
             stroke: '#000000',
             strokeThickness: 2
         });
+        centerText(eccText, window.innerWidth/2);
         this.img2.sliderEcc = this.plugins.get('rexsliderplugin').add(this.img2, {
             endPoints: [{
                     x: this.img2.x - 100,
@@ -65,11 +63,7 @@ class MainScene extends Phaser.Scene{
                     y: this.img2.y
                 }
             ],
-            value: 0, 
-            valuechangeCallback: function (value) {
-                eccText.text = 'Eccentricity: ' + Math.round(value*10)/10;
-                centerText(eccText, window.innerWidth/2);
-            }
+            value: 0
         });
         this.add.graphics()
             .lineStyle(3, 0xffffff, 1)
@@ -99,24 +93,25 @@ class MainScene extends Phaser.Scene{
          * speed at which the planet moves should be lower, so the gameState.factor
          * is also adjusted. */
         this.img.sliderRadius.on('valuechange', function(newValue, prevValue){
-            var newOrbitRadius = 100 + newValue*200;
-            gameState.radiusMin = newOrbitRadius;
-            gameState.radiusMaj = Math.sqrt(gameState.radiusMin**2/(1 - gameState.eccentricity**2));
-            gameState.bodies.orbit.setSize(gameState.radiusMaj, gameState.radiusMin);
             gameState.factor = 1 - newValue + 0.2;
+            newValue = 100 + newValue*200;
+            orbitRadiusText.text = 'Orbit radius: ' + Math.round(newValue*10)/10;
+            centerText(orbitRadiusText, 200);
+            gameState.radiusMin = newValue;
+            gameState.radiusMaj = Math.sqrt(gameState.radiusMin**2/(1 - gameState.eccentricity**2));
+            gameState.bodies.orbit.setSize(2*gameState.radiusMaj, 2*gameState.radiusMin);
         });
 
-
+        /* When the user sets a new value for the eccentricity, the eccentricity
+         * of the planet's orbit should change, as well as the eccentricity of
+         * the white ellipse. The text under the slider is also updated. */
         this.img2.sliderEcc.on('valuechange', function(newValue, prevValue){
-            console.log('hereee');
+            newValue = newValue*0.985;
+            eccText.text = 'Eccentricity: ' + Math.round(newValue*100)/100;
+            centerText(eccText, window.innerWidth/2);
             gameState.eccentricity = newValue;
-            if (newValue === 1){
-                newValue = 0.99;
-            }
             gameState.radiusMaj = Math.sqrt(Math.pow(gameState.radiusMin, 2)/(1 - Math.pow(gameState.eccentricity, 2)));
-            console.log(gameState.radiusMin);
-            console.log(gameState.eccentricity);
-            console.log(gameState.radiusMaj);
+            gameState.bodies.orbit.setSize(2*gameState.radiusMaj, 2*gameState.radiusMin);
         });
     }
 
