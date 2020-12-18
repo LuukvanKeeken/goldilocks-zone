@@ -9,6 +9,7 @@ const gameState = {
     period: 0,
     radiusMaj: 150,
     radiusMin: 150,
+    shift: 0,
     eccentricity: 0
 }
 

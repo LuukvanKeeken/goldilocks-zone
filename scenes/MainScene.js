@@ -73,7 +73,6 @@ class MainScene extends Phaser.Scene{
         /* Orbit line of the planet. */
         gameState.bodies.orbit = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, 300, 300);
         gameState.bodies.orbit.setStrokeStyle(3, 0xffffff, 0.8);
-        console.log(gameState.bodies.orbit);
 
         /* Circle representing the planet. */
         gameState.bodies.planet = this.add.circle(500, 500, 15, 0xffffff);
@@ -100,6 +99,12 @@ class MainScene extends Phaser.Scene{
             gameState.radiusMin = newValue;
             gameState.radiusMaj = Math.sqrt(gameState.radiusMin**2/(1 - gameState.eccentricity**2));
             gameState.bodies.orbit.setSize(2*gameState.radiusMaj, 2*gameState.radiusMin);
+
+            /* If the eccentricity is higher than 0, the orbit should be shifted.
+             * Normal equation is shift = 0.5(a-c), but gameState.radiusMaj already
+             * is 0.5*a. */
+            gameState.shift = gameState.radiusMaj*gameState.eccentricity;
+            gameState.bodies.orbit.x = gameState.bodies.star.x + gameState.shift;
         });
 
         /* When the user sets a new value for the eccentricity, the eccentricity
@@ -107,17 +112,31 @@ class MainScene extends Phaser.Scene{
          * the white ellipse. The text under the slider is also updated. */
         this.img2.sliderEcc.on('valuechange', function(newValue, prevValue){
             newValue = newValue*0.985;
-            eccText.text = 'Eccentricity: ' + Math.round(newValue*100)/100;
+            newValue = Math.round(newValue*100)/100;
+            eccText.text = 'Eccentricity: ' + newValue;
             centerText(eccText, window.innerWidth/2);
             gameState.eccentricity = newValue;
             gameState.radiusMaj = Math.sqrt(Math.pow(gameState.radiusMin, 2)/(1 - Math.pow(gameState.eccentricity, 2)));
             gameState.bodies.orbit.setSize(2*gameState.radiusMaj, 2*gameState.radiusMin);
+
+            /* If the eccentricity is higher than 0, the orbit should be shifted.
+             * Normal equation is shift = 0.5(a-c), but gameState.radiusMaj already
+             * is 0.5*a. */
+            gameState.shift = gameState.radiusMaj*gameState.eccentricity;
+            console.log('radiusMaj: ' + gameState.radiusMaj);
+            console.log('eccentricity: ' + gameState.eccentricity);
+            console.log('shift: ' + gameState.shift);
+            console.log('star.x: ' + gameState.bodies.star.x);
+            console.log('middle: ' + window.innerWidth/2);
+            gameState.bodies.orbit.x = gameState.bodies.star.x + gameState.shift;
         });
     }
 
     update(){
         gameState.period += 0.04*gameState.factor;
-        gameState.bodies.planet.x = (window.innerWidth/2) + Math.cos(gameState.period)*gameState.radiusMaj;
+        /* When the orbit has an eccentricity higher than 0, the orbit
+         * should be adjusted to have the star in 1 of the foci. */
+        gameState.bodies.planet.x = gameState.shift + (window.innerWidth/2) + Math.cos(gameState.period)*gameState.radiusMaj;
         gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(gameState.period)*gameState.radiusMin;
     }
 
