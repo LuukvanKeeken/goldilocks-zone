@@ -4,7 +4,6 @@ class MainScene extends Phaser.Scene{
         super({key: 'MainScene'});
     }
 
-
     preload(){
         var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexsliderplugin.min.js';
         this.load.plugin('rexsliderplugin', url, true);
@@ -86,54 +85,96 @@ class MainScene extends Phaser.Scene{
         gameState.bodies.starAtm2.alpha = 0.2;
         gameState.bodies.star = this.add.circle(window.innerWidth/2, window.innerHeight/2, 30, 0xfcd440);
 
+        var calculateNewProportions = function(adjustedParam){
+            if (adjustedParam === 'eccentricity'){
+                /* Find the radius which in combination with the chosen
+                 * eccentricity will not le the orbit go off-screen. */
+                var limitFound = false;
+                for (var i = 100; i < 300; i++){
+                    var majorAxis = Math.sqrt((i**2)/(1 - (gameState.eccentricity**2)));
+                    if (gameState.bodies.star.x + majorAxis*(1 + gameState.eccentricity) > window.innerWidth - gameState.bodies.planet.radius - 10){
+                        console.log(i-1);
+                        gameState.maxRadiusProp = (i-1)/300;
+                        limitFound = true;
+                        break;
+                    }
+                }
+                if (!limitFound){
+                    gameState.maxRadiusProp = 1;
+                }
+            } else if (adjustedParam === 'radius'){
+                /* Find the maximum eccentricity which in combination with the
+                 * chosen radius will not let the orbit go off-screen. */
+                for (var i = 0; i < 1000; i++){
+                    var majorAxis = Math.sqrt((gameState.radiusMin**2)/(1 - (i/1000)**2));
+                    if (gameState.bodies.star.x + majorAxis*(1 + i/1000) > window.innerWidth - gameState.bodies.planet.radius - 10){
+                        if (i > 0){
+                            gameState.maxEccProp = (i-1)/1000;
+                        } else {
+                            gameState.maxEccProp = 0;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        calculateNewProportions('radius');
+        calculateNewProportions('eccentricity');
+
+
         /* When the user sets a new value for the orbital radius, the distance
          * of the planet to the star should change, as well as the radius of 
          * the ellipse representing the orbit. When the orbit is larger, the
          * speed at which the planet moves should be lower, so the gameState.factor
          * is also adjusted. */
         this.img.sliderRadius.on('valuechange', function(newValue, prevValue){
-            gameState.factor = 1 - newValue + 0.2;
-            newValue = 100 + newValue*200;
-            orbitRadiusText.text = 'Orbit radius: ' + Math.round(newValue*10)/10;
+            gameState.factor = 1.3 - (newValue*gameState.maxRadiusProp); //Not only newValue, because that only the denotes the place on the slider.
+            var newRadius = 100 + newValue*(gameState.maxRadiusProp*300 - 100);
+            orbitRadiusText.text = 'Orbit radius: ' + Math.round(newRadius*10)/10;
             centerText(orbitRadiusText, 200);
-            gameState.radiusMin = newValue;
+            gameState.radiusMin = newRadius;
             gameState.radiusMaj = Math.sqrt(gameState.radiusMin**2/(1 - gameState.eccentricity**2));
             gameState.bodies.orbit.setSize(2*gameState.radiusMaj, 2*gameState.radiusMin);
 
             /* If the eccentricity is higher than 0, the orbit should be shifted.
-             * Normal equation is shift = 0.5(a-c), but gameState.radiusMaj already
+             * Normal equation is shift = 0.5*a*c, but gameState.radiusMaj already
              * is 0.5*a. */
             gameState.shift = gameState.radiusMaj*gameState.eccentricity;
             gameState.bodies.orbit.x = gameState.bodies.star.x + gameState.shift;
+            calculateNewProportions('radius');
         });
 
         /* When the user sets a new value for the eccentricity, the eccentricity
          * of the planet's orbit should change, as well as the eccentricity of
          * the white ellipse. The text under the slider is also updated. */
         this.img2.sliderEcc.on('valuechange', function(newValue, prevValue){
-            newValue = newValue*0.985;
-            newValue = Math.round(newValue*100)/100;
+            newValue = newValue*gameState.maxEccProp;
+            newValue = Math.floor(newValue*1000)/1000;
             eccText.text = 'Eccentricity: ' + newValue;
             centerText(eccText, window.innerWidth/2);
             gameState.eccentricity = newValue;
+            // calculateNewProportions('eccentricity');
+
             gameState.radiusMaj = Math.sqrt(Math.pow(gameState.radiusMin, 2)/(1 - Math.pow(gameState.eccentricity, 2)));
             gameState.bodies.orbit.setSize(2*gameState.radiusMaj, 2*gameState.radiusMin);
 
             /* If the eccentricity is higher than 0, the orbit should be shifted.
-             * Normal equation is shift = 0.5(a-c), but gameState.radiusMaj already
+             * Normal equation is shift = 0.5*a*c, but gameState.radiusMaj already
              * is 0.5*a. */
             gameState.shift = gameState.radiusMaj*gameState.eccentricity;
-            console.log('radiusMaj: ' + gameState.radiusMaj);
-            console.log('eccentricity: ' + gameState.eccentricity);
-            console.log('shift: ' + gameState.shift);
-            console.log('star.x: ' + gameState.bodies.star.x);
-            console.log('middle: ' + window.innerWidth/2);
             gameState.bodies.orbit.x = gameState.bodies.star.x + gameState.shift;
+            calculateNewProportions('eccentricity');
         });
     }
 
     update(){
-        gameState.period += 0.04*gameState.factor;
+        /* Velocity is increased proportionally to how close the planet is to the star.
+         * The multiplication factor is 1 when the distance is equal to the length of
+         * the minor axis radius (not diameter). */
+        gameState.distanceToStar = Math.sqrt((gameState.bodies.planet.x- gameState.bodies.star.x)**2 
+            + (gameState.bodies.planet.y - gameState.bodies.star.y)**2);
+        gameState.period += 0.07*gameState.factor*(gameState.radiusMin/gameState.distanceToStar);
         /* When the orbit has an eccentricity higher than 0, the orbit
          * should be adjusted to have the star in 1 of the foci. */
         gameState.bodies.planet.x = gameState.shift + (window.innerWidth/2) + Math.cos(gameState.period)*gameState.radiusMaj;

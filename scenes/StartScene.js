@@ -77,7 +77,7 @@ class StartScene extends Phaser.Scene{
     }
 
     update(){
-        gameState.period += 0.04;
+        gameState.period += 0.07;
         gameState.bodies.planet.x = (window.innerWidth/2) + Math.cos(gameState.period)*gameState.radiusMaj;
         gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(gameState.period)*gameState.radiusMaj;
     }

@@ -10,7 +10,10 @@ const gameState = {
     radiusMaj: 150,
     radiusMin: 150,
     shift: 0,
-    eccentricity: 0
+    eccentricity: 0,
+    distanceToStar: 150,
+    maxRadiusProp: 1,
+    maxEccProp: 0.985
 }
 
 function centerText(text, centerCoordinate){
