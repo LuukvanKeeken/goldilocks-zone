@@ -13,7 +13,9 @@ const gameState = {
     eccentricity: 0,
     distanceToStar: 150,
     maxRadiusProp: 1,
-    maxEccProp: 0.985
+    maxEccProp: 0.985,
+    widthFactor: 0,
+    heightFactor: 0
 }
 
 function centerText(text, centerCoordinate){
