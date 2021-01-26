@@ -1,6 +1,7 @@
 const gameState = {
     introTexts: {},
-    temperature: 0,
+    temperature: 5778,
+    class: 'G',
     size: 0,
     eccentricity: 0,
     orbit_diameter: 0,

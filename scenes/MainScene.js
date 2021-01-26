@@ -70,6 +70,30 @@ class MainScene extends Phaser.Scene{
             .lineStyle(3, 0xffffff, 1)
             .strokePoints(this.img2.sliderEcc.endPoints);
 
+        this.img3 = this.add.image(window.innerWidth - 200, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        var tempText = this.add.text(this.img3.x, this.img3.y + 20, 'Temperature: ' + gameState.temperature + ' K (class ' + gameState.class + ')', {
+            fontSize: font + 'px',
+            fill: '#fcd440',
+            stroke: '#000000',
+            strokeThickness: 2
+        });
+        centerText(tempText, window.innerWidth - 200);
+        this.img3.sliderTemp = this.plugins.get('rexsliderplugin').add(this.img3, {
+            endPoints: [{
+                    x: this.img3.x - 100,
+                    y: this.img3.y
+                },
+                {
+                    x: this.img3.x + 100,
+                    y: this.img3.y
+                }
+            ],
+            value: 0.0898
+        });
+        this.add.graphics()
+            .lineStyle(3, 0xffffff, 1)
+            .strokePoints(this.img3.sliderTemp.endPoints);
+
 
         /* Orbit line of the planet. */
         gameState.bodies.orbit = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, 300*gameState.heightFactor, 300*gameState.heightFactor);
@@ -170,6 +194,50 @@ class MainScene extends Phaser.Scene{
             gameState.shift = gameState.radiusMaj*gameState.eccentricity;
             gameState.bodies.orbit.x = gameState.bodies.star.x + gameState.shift;
             calculateNewProportions('eccentricity');
+        });
+
+        var recolorStar = function(newColor){
+            gameState.bodies.star.fillColor = newColor;
+            gameState.bodies.starAtm1.fillColor = newColor;
+            gameState.bodies.starAtm3.fillColor = newColor;
+            gameState.bodies.starAtm2.fillColor = newColor;
+        }
+
+        this.img3.sliderTemp.on('valuechange', function(newValue, prevValue){
+            gameState.temperature = Math.floor(newValue*37600) + 2400;
+
+            if (gameState.temperature >= 2400 && gameState.temperature < 3500){
+                gameState.class = 'M';
+                tempText.style.color = '#ff4000';
+                recolorStar(0xff4000);
+            } else if (gameState.temperature >= 3500 && gameState.temperature < 5000){
+                gameState.class = 'K';
+                tempText.style.color = '#ff9100';
+                recolorStar(0xff9100);
+            } else if (gameState.temperature >= 5000 && gameState.temperature < 6000){
+                gameState.class = 'G';
+                tempText.style.color = '#fcd440';
+                recolorStar(0xfcd440);
+            } else if (gameState.temperature >= 6000 && gameState.temperature < 7500){
+                gameState.class = 'F';
+                tempText.style.color = '#ffeba3';
+                recolorStar(0xffeba3);
+            } else if (gameState.temperature >= 7500 && gameState.temperature < 10000){
+                gameState.class = 'A';
+                tempText.style.color = '#cfefff';
+                recolorStar(0xcfefff);
+            } else if (gameState.temperature >= 10000 && gameState.temperature < 30000){
+                gameState.class = 'B';
+                tempText.style.color = '#8cd9ff';
+                recolorStar(0x8cd9ff);
+            } else if (gameState.temperature >= 30000 && gameState.temperature < 40000){
+                gameState.class = 'O';
+                tempText.style.color = '#0099ff';
+                recolorStar(0x0099ff);
+            }
+
+            tempText.text = 'Temperature: ' + gameState.temperature + ' K (class ' + gameState.class + ')';
+            centerText(tempText, window.innerWidth - 200); 
         });
     }
 
