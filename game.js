@@ -2,7 +2,7 @@ const gameState = {
     introTexts: {},
     temperature: 5778,
     class: 'G',
-    size: 0,
+    size: 1,
     eccentricity: 0,
     orbit_diameter: 0,
     bodies: {},

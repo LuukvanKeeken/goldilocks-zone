@@ -19,7 +19,7 @@ class MainScene extends Phaser.Scene{
         this.add.image(900, 100, 'background');
 
         /* Create slider and text for changing the radius of the orbit. */
-        this.img = this.add.image(200, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        this.img = this.add.image(window.innerWidth*0.25, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
         let font = 20*gameState.heightFactor;
         font = font.toString();
         var orbitRadiusText = this.add.text(this.img.x, this.img.y + 20, 'Orbit radius: ' + Math.round((100+0.25*200)*10)/10, {
@@ -28,7 +28,7 @@ class MainScene extends Phaser.Scene{
             stroke: '#000000',
             strokeThickness: 2
         });
-        centerText(orbitRadiusText, 200);
+        centerText(orbitRadiusText, window.innerWidth*0.25);
         this.img.sliderRadius = this.plugins.get('rexsliderplugin').add(this.img, {
             endPoints: [{
                     x: this.img.x - 100,
@@ -46,14 +46,14 @@ class MainScene extends Phaser.Scene{
             .strokePoints(this.img.sliderRadius.endPoints);
 
         /* Create slider and text for the eccentricity. */
-        this.img2 = this.add.image(window.innerWidth/2, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        this.img2 = this.add.image(window.innerWidth*0.5, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
         var eccText = this.add.text(this.img2.x, this.img2.y + 20, 'Eccentricity: ' + Math.round(gameState.eccentricity*100)/100, {
             fontSize: font + 'px',
             fill: '#ffffff',
             stroke: '#000000',
             strokeThickness: 2
         });
-        centerText(eccText, window.innerWidth/2);
+        centerText(eccText, window.innerWidth*0.5);
         this.img2.sliderEcc = this.plugins.get('rexsliderplugin').add(this.img2, {
             endPoints: [{
                     x: this.img2.x - 100,
@@ -70,14 +70,15 @@ class MainScene extends Phaser.Scene{
             .lineStyle(3, 0xffffff, 1)
             .strokePoints(this.img2.sliderEcc.endPoints);
 
-        this.img3 = this.add.image(window.innerWidth - 200, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
-        var tempText = this.add.text(this.img3.x, this.img3.y + 20, 'Temperature: ' + gameState.temperature + ' K (class ' + gameState.class + ')', {
+        /* Create slider and text for the temperature/spectral class. */
+        this.img3 = this.add.image(window.innerWidth*0.75, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        var tempText = this.add.text(this.img3.x, this.img3.y + 20, 'Star temperature: ' + gameState.temperature + ' K (class ' + gameState.class + ')', {
             fontSize: font + 'px',
             fill: '#fcd440',
             stroke: '#000000',
             strokeThickness: 2
         });
-        centerText(tempText, window.innerWidth - 200);
+        centerText(tempText, window.innerWidth*0.75);
         this.img3.sliderTemp = this.plugins.get('rexsliderplugin').add(this.img3, {
             endPoints: [{
                     x: this.img3.x - 100,
@@ -93,6 +94,14 @@ class MainScene extends Phaser.Scene{
         this.add.graphics()
             .lineStyle(3, 0xffffff, 1)
             .strokePoints(this.img3.sliderTemp.endPoints);
+
+        // gameState.planetTempText = this.add.text(300, window.innerHeight/2, 'Distance to star: ' + gameState.distanceToStar, {
+        //     fontSize: font + 'px',
+        //     fill: '#ffffff',
+        //     stroke: '#000000',
+        //     strokeThickness: 2
+        // });
+
 
 
         /* Orbit line of the planet. */
@@ -151,7 +160,7 @@ class MainScene extends Phaser.Scene{
             gameState.factor = 1.3 - (newValue*gameState.maxRadiusProp); //Not only newValue, because that only the denotes the place on the slider.
             var newRadius = (100 + newValue*(gameState.maxRadiusProp*300 - 100))*gameState.heightFactor;
             orbitRadiusText.text = 'Orbit radius: ' + Math.round(newRadius*10)/10;
-            centerText(orbitRadiusText, 200);
+            centerText(orbitRadiusText, window.innerWidth*0.25);
             gameState.radiusMin = newRadius;
             gameState.radiusMaj = Math.sqrt(gameState.radiusMin**2/(1 - gameState.eccentricity**2));
             gameState.bodies.orbit.setSize(2*gameState.radiusMaj, 2*gameState.radiusMin);
@@ -182,7 +191,7 @@ class MainScene extends Phaser.Scene{
             newValue = newValue*gameState.maxEccProp;
             newValue = Math.floor(newValue*1000)/1000;
             eccText.text = 'Eccentricity: ' + newValue;
-            centerText(eccText, window.innerWidth/2);
+            centerText(eccText, window.innerWidth*0.5);
             gameState.eccentricity = newValue;
 
             gameState.radiusMaj = Math.sqrt(Math.pow(gameState.radiusMin, 2)/(1 - Math.pow(gameState.eccentricity, 2)));
@@ -201,7 +210,7 @@ class MainScene extends Phaser.Scene{
             gameState.bodies.starAtm1.fillColor = newColor;
             gameState.bodies.starAtm3.fillColor = newColor;
             gameState.bodies.starAtm2.fillColor = newColor;
-        }
+        };
 
         this.img3.sliderTemp.on('valuechange', function(newValue, prevValue){
             gameState.temperature = Math.floor(newValue*37600) + 2400;
@@ -236,9 +245,22 @@ class MainScene extends Phaser.Scene{
                 recolorStar(0x0099ff);
             }
 
-            tempText.text = 'Temperature: ' + gameState.temperature + ' K (class ' + gameState.class + ')';
-            centerText(tempText, window.innerWidth - 200); 
+            var innerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(1455.26)/((1.49597871*Math.pow(10, 11)));
+            var outerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(698.6)/((1.49597871*Math.pow(10, 11)));
+
+            
+            gameState.bodies.glz.setSize(300*(outerLimit+innerLimit)/2, 300*(outerLimit+innerLimit)/2);
+            gameState.bodies.glz.setStrokeStyle(20*(outerLimit-innerLimit), 0x00ff00, 0.3);
+
+
+            tempText.text = 'Star temperature: ' + gameState.temperature + ' K (class ' + gameState.class + ')';
+            centerText(tempText, window.innerWidth*0.75); 
         });
+
+
+        gameState.bodies.glz = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, 2*300*gameState.heightFactor, 2*300*gameState.heightFactor);
+        gameState.bodies.glz.setStrokeStyle(20, 0x00ff00, 0.3);
+        
     }
 
     update(){
@@ -252,6 +274,7 @@ class MainScene extends Phaser.Scene{
          * should be adjusted to have the star in 1 of the foci. */
         gameState.bodies.planet.x = gameState.shift + (window.innerWidth/2) + Math.cos(gameState.period)*gameState.radiusMaj;
         gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(gameState.period)*gameState.radiusMin;
+        // gameState.planetTempText.text = 'Distance to star: ' + Math.round((gameState.distanceToStar)*10)/10;
     }
 
 }
