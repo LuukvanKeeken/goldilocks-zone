@@ -16,7 +16,9 @@ const gameState = {
     maxRadiusProp: 1,
     maxEccProp: 0.985,
     widthFactor: 0,
-    heightFactor: 0
+    heightFactor: 0, 
+    maxAllowedRadius: 350,
+    minAllowedRadius: 40
 }
 
 function centerText(text, centerCoordinate){

@@ -55,7 +55,7 @@ class StartScene extends Phaser.Scene{
         gameState.bodies.orbit = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, 300*gameState.heightFactor, 300*gameState.heightFactor);
         gameState.bodies.orbit.setStrokeStyle(3, 0xffffff, 0.8);
         /* Circle representing the planet. */
-        gameState.bodies.planet = this.add.circle(500, 500, 15*gameState.heightFactor, 0xffffff);
+        gameState.bodies.planet = this.add.circle(500, 500, 10*gameState.heightFactor, 0xffffff);
 
         /* Circles representing the Sun and its atmosphere. */
         gameState.bodies.starAtm1 = this.add.circle(window.innerWidth/2, window.innerHeight/2, 35*gameState.heightFactor, 0xfcd440);

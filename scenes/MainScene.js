@@ -105,11 +105,11 @@ class MainScene extends Phaser.Scene{
 
 
         /* Orbit line of the planet. */
-        gameState.bodies.orbit = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, 300*gameState.heightFactor, 300*gameState.heightFactor);
+        gameState.bodies.orbit = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, gameState.maxAllowedRadius*gameState.heightFactor, gameState.maxAllowedRadius*gameState.heightFactor);
         gameState.bodies.orbit.setStrokeStyle(3, 0xffffff, 0.8);
 
         /* Circle representing the planet. */
-        gameState.bodies.planet = this.add.circle(500, 500, 15*gameState.heightFactor, 0xffffff);
+        gameState.bodies.planet = this.add.circle(500, 500, 10*gameState.heightFactor, 0xffffff);
 
         /* Circles representing the Sun and its atmosphere. */
         gameState.bodies.starAtm1 = this.add.circle(window.innerWidth/2, window.innerHeight/2, 35*gameState.heightFactor, 0xfcd440);
@@ -125,11 +125,11 @@ class MainScene extends Phaser.Scene{
                 /* Find the radius which in combination with the chosen
                  * eccentricity will not let the orbit go off-screen. */
                 var limitFound = false;
-                for (var i = 100; i < 300*gameState.heightFactor; i++){
+                for (var i = 48; i < 400; i++){
                     var majorAxis = Math.sqrt((i**2)/(1 - (gameState.eccentricity**2)));
                     if (gameState.bodies.star.x + majorAxis*(1 + gameState.eccentricity) > window.innerWidth - gameState.bodies.planet.radius - 10*(1/gameState.heightFactor)){
                         console.log(i-1);
-                        gameState.maxRadiusProp = (i-1)/(300*gameState.heightFactor);
+                        gameState.maxRadiusProp = (i-1)/(gameState.maxAllowedRadius*gameState.heightFactor);
                         limitFound = true;
                         break;
                     }
@@ -157,13 +157,28 @@ class MainScene extends Phaser.Scene{
         calculateNewProportions('eccentricity');
 
         var adjustRadius = function(newValue){
+            // newValue = 0.0249441359;
+            // newValue *= 0.7538098383;
+            newValue *= 0.75;
             gameState.factor = 1.3 - (newValue*gameState.maxRadiusProp); //Not only newValue, because that only the denotes the place on the slider.
-            var newRadius = (100 + newValue*(gameState.maxRadiusProp*300 - 100))*gameState.heightFactor;
-            orbitRadiusText.text = 'Orbit radius: ' + Math.round(newRadius*10)/10;
+            // var newRadius = (gameState.minAllowedRadius + newValue*(gameState.maxRadiusProp*gameState.maxAllowedRadius - gameState.minAllowedRadius))*gameState.heightFactor;
+            // var newRadius = ((gameState.maxAllowedRadius*gameState.maxRadiusProp-gameState.minAllowedRadius)*newValue + gameState.minAllowedRadius)*gameState.heightFactor;
+            // var newRadius = ((399.4827716*gameState.maxRadiusProp)*newValue + 48.86595656)*gameState.heightFactor;
+            // var newRadius = ((gameState.heightFactor*(gameState.maxAllowedRadius*gameState.maxRadiusProp - gameState.minAllowedRadius))*newValue + gameState.minAllowedRadius*gameState.heightFactor);
+            var newRadius = gameState.maxRadiusProp*(399.4827716*newValue + 48.86595656)*gameState.heightFactor;
+            // orbitRadiusText.text = 'Orbit radius: ' + Math.round(newRadius*10)/10/10 + ' AU';
+            // orbitRadiusText.text = 'Semi-minor axis: ' + (newValue*33.38037594 + 0.1673553679).toFixed(3) + ' AU';
+            // newValue /= 0.7538098383;
+            // orbitRadiusText.text = 'Semi-minor axis: ' + (33.34328179*newValue + 0.204449517).toFixed(3) + ' AU';
+            
+            orbitRadiusText.text = 'Semi-minor axis: ' + gameState.maxRadiusProp*(56.5870829*newValue + 0.2044495167) + ' AU';
+            
             centerText(orbitRadiusText, window.innerWidth*0.25);
             gameState.radiusMin = newRadius;
             gameState.radiusMaj = Math.sqrt(gameState.radiusMin**2/(1 - gameState.eccentricity**2));
             gameState.bodies.orbit.setSize(2*gameState.radiusMaj, 2*gameState.radiusMin);
+            console.log('Orbit diameter: ' + gameState.bodies.orbit.geom.height);
+            console.log('HeightFactor: ' + gameState.heightFactor);
 
             /* If the eccentricity is higher than 0, the orbit should be shifted.
              * Normal equation is shift = 0.5*a*c, but gameState.radiusMaj already
@@ -213,6 +228,8 @@ class MainScene extends Phaser.Scene{
         };
 
         this.img3.sliderTemp.on('valuechange', function(newValue, prevValue){
+            // newValue = 0.077336292;
+            // newValue = 0.7538098383;
             gameState.temperature = Math.floor(newValue*37600) + 2400;
 
             if (gameState.temperature >= 2400 && gameState.temperature < 3500){
@@ -244,21 +261,33 @@ class MainScene extends Phaser.Scene{
                 tempText.style.color = '#0099ff';
                 recolorStar(0x0099ff);
             }
+            gameState.temperature = newValue*37600 + 2400;
+            // var innerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(1455.26)/((1.49597871*Math.pow(10, 11)));
+            // var outerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(698.6)/((1.49597871*Math.pow(10, 11)));
+            // var averageDist = (innerLimit+outerLimit)/2;
+            // console.log(gameState.bodies.orbit);
+            var averageDist = 56.5870829*newValue + 0.2044495167;
+            var habZoneRad = (399.4827716*newValue + 48.86595656)*gameState.heightFactor;
 
-            var innerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(1455.26)/((1.49597871*Math.pow(10, 11)));
-            var outerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(698.6)/((1.49597871*Math.pow(10, 11)));
 
-            
-            gameState.bodies.glz.setSize(300*(outerLimit+innerLimit)/2, 300*(outerLimit+innerLimit)/2);
-            gameState.bodies.glz.setStrokeStyle(20*(outerLimit-innerLimit), 0x00ff00, 0.3);
+            console.log('Orbit radius: ' + gameState.bodies.orbit.geom.height);
+            // console.log('innerLimit: ' + innerLimit + ', outerLimit: ' + outerLimit + ', average: ' + averageDist);
+            // console.log('hab zone radius: ' + (2*gameState.heightFactor*(averageDist/0.167355379)*gameState.minAllowedRadius));
+            // var habZoneRad = (399.4827716*newValue + 48.86595656)*gameState.heightFactor;
+            // var habZoneRad = (gameState.heightFactor*(gameState.maxAllowedRadius - gameState.minAllowedRadius)*newValue + gameState.heightFactor*gameState.minAllowedRadius);
+            console.log('habZoneRad: ' + 2*habZoneRad);
+            gameState.bodies.glz.setSize(2*habZoneRad, 2*habZoneRad);
+            console.log('Actual height: ' + gameState.bodies.glz.geom.height);
+            // gameState.bodies.glz.setSize(2*gameState.heightFactor*(averageDist/0.167355379)*(gameState.minAllowedRadius), 2*gameState.heightFactor*(averageDist/0.167355379)*(gameState.minAllowedRadius));
+            gameState.bodies.glz.setStrokeStyle(3, 0x00ff00, 0.3);
 
 
-            tempText.text = 'Star temperature: ' + gameState.temperature + ' K (class ' + gameState.class + ')';
+            tempText.text = 'Star temperature: ' + gameState.temperature + ' K (class ' + gameState.class + '), avg: ' + averageDist + ' AU';
             centerText(tempText, window.innerWidth*0.75); 
         });
 
 
-        gameState.bodies.glz = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, 2*300*gameState.heightFactor, 2*300*gameState.heightFactor);
+        gameState.bodies.glz = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, 2*gameState.maxAllowedRadius*gameState.heightFactor, 2*gameState.maxAllowedRadius*gameState.heightFactor);
         gameState.bodies.glz.setStrokeStyle(20, 0x00ff00, 0.3);
         
     }
