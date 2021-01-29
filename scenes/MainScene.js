@@ -171,7 +171,7 @@ class MainScene extends Phaser.Scene{
             // newValue /= 0.7538098383;
             // orbitRadiusText.text = 'Semi-minor axis: ' + (33.34328179*newValue + 0.204449517).toFixed(3) + ' AU';
             
-            orbitRadiusText.text = 'Semi-minor axis: ' + gameState.maxRadiusProp*(56.5870829*newValue + 0.2044495167) + ' AU';
+            orbitRadiusText.text = 'Semi-minor axis: ' + (gameState.maxRadiusProp*(56.5870829*newValue + 0.2044495167)).toFixed(3) + ' AU';
             
             centerText(orbitRadiusText, window.innerWidth*0.25);
             gameState.radiusMin = newRadius;
@@ -262,27 +262,23 @@ class MainScene extends Phaser.Scene{
                 recolorStar(0x0099ff);
             }
             gameState.temperature = newValue*37600 + 2400;
-            // var innerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(1455.26)/((1.49597871*Math.pow(10, 11)));
-            // var outerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(698.6)/((1.49597871*Math.pow(10, 11)));
-            // var averageDist = (innerLimit+outerLimit)/2;
-            // console.log(gameState.bodies.orbit);
-            var averageDist = 56.5870829*newValue + 0.2044495167;
-            var habZoneRad = (399.4827716*newValue + 48.86595656)*gameState.heightFactor;
-
-
-            console.log('Orbit radius: ' + gameState.bodies.orbit.geom.height);
-            // console.log('innerLimit: ' + innerLimit + ', outerLimit: ' + outerLimit + ', average: ' + averageDist);
-            // console.log('hab zone radius: ' + (2*gameState.heightFactor*(averageDist/0.167355379)*gameState.minAllowedRadius));
+            var innerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(1455.26)/((1.49597871*Math.pow(10, 11)));
+            var outerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(698.6)/((1.49597871*Math.pow(10, 11)));
+            var averageDist2 = (innerLimit+outerLimit)/2;
+            // var averageDist = 56.5870829*newValue + 0.2044495167;
+            var averageDist = (10707882.58*Math.pow(gameState.temperature, 2))/(3.016754682*Math.pow(10, 14));
             // var habZoneRad = (399.4827716*newValue + 48.86595656)*gameState.heightFactor;
-            // var habZoneRad = (gameState.heightFactor*(gameState.maxAllowedRadius - gameState.minAllowedRadius)*newValue + gameState.heightFactor*gameState.minAllowedRadius);
-            console.log('habZoneRad: ' + 2*habZoneRad);
-            gameState.bodies.glz.setSize(2*habZoneRad, 2*habZoneRad);
-            console.log('Actual height: ' + gameState.bodies.glz.geom.height);
-            // gameState.bodies.glz.setSize(2*gameState.heightFactor*(averageDist/0.167355379)*(gameState.minAllowedRadius), 2*gameState.heightFactor*(averageDist/0.167355379)*(gameState.minAllowedRadius));
+            var habZoneRad = (-2.75897*Math.pow(10, -7)*gameState.temperature + 0.021023*gameState.temperature);
+            console.log('innerLimit: ' + innerLimit + ', outerLimit: ' + outerLimit + ', calculated average: ' + averageDist2 + ', equation average: ' + averageDist);
+
+            // console.log('Orbit radius: ' + gameState.bodies.orbit.geom.height);
+            // console.log('habZoneRad: ' + 2*habZoneRad);
+            gameState.bodies.glz.setSize(habZoneRad, habZoneRad);
+            // console.log('Actual height: ' + gameState.bodies.glz.geom.height);
             gameState.bodies.glz.setStrokeStyle(3, 0x00ff00, 0.3);
 
 
-            tempText.text = 'Star temperature: ' + gameState.temperature + ' K (class ' + gameState.class + '), avg: ' + averageDist + ' AU';
+            tempText.text = 'Star temperature: ' + gameState.temperature + ' K (class ' + gameState.class + '), avgDist: ' + averageDist;
             centerText(tempText, window.innerWidth*0.75); 
         });
 
