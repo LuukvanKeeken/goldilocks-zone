@@ -258,10 +258,11 @@ class MainScene extends Phaser.Scene{
             var innerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(1455.26)/((1.49597871*Math.pow(10, 11)));
             var outerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(698.6)/((1.49597871*Math.pow(10, 11)));
             var averageDist = (innerLimit+outerLimit)/2;
+            var difference = outerLimit-innerLimit;
 
             var habZoneRad = calculatePixels(averageDist);
             gameState.bodies.glz.setSize(2*habZoneRad, 2*habZoneRad);
-            gameState.bodies.glz.setStrokeStyle(3, 0x00ff00, 0.3);
+            gameState.bodies.glz.setStrokeStyle(calculatePixels(difference), 0x00ff00, 0.3);
 
 
             tempText.text = 'Star temperature: ' + gameState.temperature.toFixed(0) + ' K (class ' + gameState.class + ')';
