@@ -22,7 +22,7 @@ class MainScene extends Phaser.Scene{
         this.img = this.add.image(window.innerWidth*0.25, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
         let font = 20*gameState.heightFactor;
         font = font.toString();
-        var orbitRadiusText = this.add.text(this.img.x, this.img.y + 20, 'Orbit radius: ' + Math.round((100+0.25*200)*10)/10, {
+        var orbitRadiusText = this.add.text(this.img.x, this.img.y + 20, 'Orbit radius: 3.75 AU', {
             fontSize: font + 'px',
             fill: '#ffffff',
             stroke: '#000000',
@@ -39,7 +39,7 @@ class MainScene extends Phaser.Scene{
                     y: this.img.y
                 }
             ],
-            value: 0.25
+            value: 0.0835435217
         });
         this.add.graphics()
             .lineStyle(3, 0xffffff, 1)
@@ -114,7 +114,7 @@ class MainScene extends Phaser.Scene{
 
 
         /* Orbit line of the planet. */
-        gameState.bodies.orbit = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, gameState.maxAllowedRadius*gameState.heightFactor, gameState.maxAllowedRadius*gameState.heightFactor);
+        gameState.bodies.orbit = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, 300*gameState.heightFactor, 300*gameState.heightFactor);
         gameState.bodies.orbit.setStrokeStyle(3, 0xffffff, 0.8);
 
         /* Circle representing the planet. */
@@ -183,7 +183,7 @@ class MainScene extends Phaser.Scene{
             calculateNewProportions('radius');
         }
         
-        adjustRadius(0.25);
+        adjustRadius(0.0835435217);
 
         /* When the user sets a new value for the orbital radius, the distance
          * of the planet to the star should change, as well as the radius of 

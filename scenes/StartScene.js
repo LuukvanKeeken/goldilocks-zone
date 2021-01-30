@@ -81,7 +81,7 @@ class StartScene extends Phaser.Scene{
                 }.bind(this)
             }, this);
         });
-
+        console.log(gameState.bodies.orbit.geom.height);
     }
 
     update(){
