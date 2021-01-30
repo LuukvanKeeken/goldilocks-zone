@@ -281,16 +281,12 @@ class MainScene extends Phaser.Scene{
          * the minor axis radius (not diameter). */
         gameState.distanceToStar = Math.sqrt((gameState.bodies.planet.x- gameState.bodies.star.x)**2 
             + (gameState.bodies.planet.y - gameState.bodies.star.y)**2);
-        // gameState.period += -5.69044513*Math.pow(10, -5)*gameState.distanceToStar + 0.0466270712;
-        // gameState.period += -3.78947368*Math.pow(10, -5)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0456842105;
-        // gameState.period += 0.04858666 - 1/(gameState.distanceToStar*(1/gameState.heightFactor));
         if (gameState.distanceToStar > 1100*gameState.heightFactor){
             gameState.period += -3.55382445*Math.pow(10, -9)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0400005331;
-            gameState.planetTempText.text = 'Distance to star: ' + gameState.distanceToStar + '\nperiodUpdate: ' + (-3.55382445*Math.pow(10, -9)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0400005331);
+            // gameState.planetTempText.text = 'Distance to star: ' + gameState.distanceToStar + '\nperiodUpdate: ' + (-3.55382445*Math.pow(10, -9)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0400005331);
         } else {
             gameState.period += -3.78947368*Math.pow(10, -5)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0456842105;
-            gameState.planetTempText.text = 'Distance to star: ' + gameState.distanceToStar + '\nperiodUpdate: ' + (-3.78947368*Math.pow(10, -5)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0456842105);
-
+            // gameState.planetTempText.text = 'Distance to star: ' + gameState.distanceToStar + '\nperiodUpdate: ' + (-3.78947368*Math.pow(10, -5)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0456842105);
         }
         
         /* When the orbit has an eccentricity higher than 0, the orbit
