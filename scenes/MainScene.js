@@ -153,8 +153,8 @@ class MainScene extends Phaser.Scene{
                 }
             }
         }
-        calculateNewProportions('radius');
-        calculateNewProportions('eccentricity');
+        // calculateNewProportions('radius');
+        // calculateNewProportions('eccentricity');
 
         var calculatePixels = function(distanceInAU){
             return (distanceInAU*((gameState.maxAllowedRadius*gameState.heightFactor)/8.75));            
@@ -180,7 +180,7 @@ class MainScene extends Phaser.Scene{
              * is 0.5*a. */
             gameState.shift = gameState.radiusMaj*gameState.eccentricity;
             gameState.bodies.orbit.x = gameState.bodies.star.x + gameState.shift;
-            calculateNewProportions('radius');
+            // calculateNewProportions('radius');
         }
         
         adjustRadius(0.0835435217);
@@ -198,7 +198,7 @@ class MainScene extends Phaser.Scene{
          * of the planet's orbit should change, as well as the eccentricity of
          * the white ellipse. The text under the slider is also updated. */
         this.img2.sliderEcc.on('valuechange', function(newValue, prevValue){
-            newValue = newValue*gameState.maxEccProp;
+            newValue = newValue*0.999;
             newValue = Math.floor(newValue*1000)/1000;
             eccText.text = 'Eccentricity: ' + newValue;
             centerText(eccText, window.innerWidth*0.5);
@@ -212,7 +212,7 @@ class MainScene extends Phaser.Scene{
              * is 0.5*a. */
             gameState.shift = gameState.radiusMaj*gameState.eccentricity;
             gameState.bodies.orbit.x = gameState.bodies.star.x + gameState.shift;
-            calculateNewProportions('eccentricity');
+            // calculateNewProportions('eccentricity');
         });
 
         var recolorStar = function(newColor){
@@ -281,12 +281,22 @@ class MainScene extends Phaser.Scene{
          * the minor axis radius (not diameter). */
         gameState.distanceToStar = Math.sqrt((gameState.bodies.planet.x- gameState.bodies.star.x)**2 
             + (gameState.bodies.planet.y - gameState.bodies.star.y)**2);
-        gameState.period += -5.69044513*Math.pow(10, -5)*gameState.distanceToStar + 0.0466270712;
+        // gameState.period += -5.69044513*Math.pow(10, -5)*gameState.distanceToStar + 0.0466270712;
+        // gameState.period += -3.78947368*Math.pow(10, -5)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0456842105;
+        // gameState.period += 0.04858666 - 1/(gameState.distanceToStar*(1/gameState.heightFactor));
+        if (gameState.distanceToStar > 1100*gameState.heightFactor){
+            gameState.period += -3.55382445*Math.pow(10, -9)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0400005331;
+            gameState.planetTempText.text = 'Distance to star: ' + gameState.distanceToStar + '\nperiodUpdate: ' + (-3.55382445*Math.pow(10, -9)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0400005331);
+        } else {
+            gameState.period += -3.78947368*Math.pow(10, -5)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0456842105;
+            gameState.planetTempText.text = 'Distance to star: ' + gameState.distanceToStar + '\nperiodUpdate: ' + (-3.78947368*Math.pow(10, -5)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0456842105);
+
+        }
+        
         /* When the orbit has an eccentricity higher than 0, the orbit
          * should be adjusted to have the star in 1 of the foci. */
         gameState.bodies.planet.x = gameState.shift + (window.innerWidth/2) + Math.cos(gameState.period)*gameState.radiusMaj;
         gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(gameState.period)*gameState.radiusMin;
-        gameState.planetTempText.text = 'Distance to star: ' + gameState.distanceToStar + '\nperiodUpdate: ' + (-1.15228655*Math.pow(10, -4)*gameState.distanceToStar + 0.0952292841);
     }
 
 }
