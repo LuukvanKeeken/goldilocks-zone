@@ -95,12 +95,12 @@ class MainScene extends Phaser.Scene{
             .lineStyle(3, 0xffffff, 1)
             .strokePoints(this.img3.sliderTemp.endPoints);
 
-        // gameState.planetTempText = this.add.text(300, window.innerHeight/2, 'Distance to star: ' + gameState.distanceToStar, {
-        //     fontSize: font + 'px',
-        //     fill: '#ffffff',
-        //     stroke: '#000000',
-        //     strokeThickness: 2
-        // });
+        gameState.planetTempText = this.add.text(300, window.innerHeight/2, 'Distance to star: ' + gameState.distanceToStar, {
+            fontSize: font + 'px',
+            fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 2
+        });
 
 
         /* Circles representing the Sun and its atmosphere. */
@@ -162,7 +162,7 @@ class MainScene extends Phaser.Scene{
 
         var adjustRadius = function(newValue){
             newValue *= 0.75;
-            gameState.factor = 1.3 - (newValue*gameState.maxRadiusProp); //Not only newValue, because that only the denotes the place on the slider.
+            // gameState.factor = 1.3 - (newValue*gameState.maxRadiusProp); //Not only newValue, because that only the denotes the place on the slider.
             var newRadius = calculatePixels(gameState.maxRadiusProp*(56.5860829*newValue + 0.2044495167));
             
             orbitRadiusText.text = 'Semi-minor axis: ' + (gameState.maxRadiusProp*(56.5870829*newValue + 0.2044495167)).toFixed(3) + ' AU';
@@ -281,12 +281,12 @@ class MainScene extends Phaser.Scene{
          * the minor axis radius (not diameter). */
         gameState.distanceToStar = Math.sqrt((gameState.bodies.planet.x- gameState.bodies.star.x)**2 
             + (gameState.bodies.planet.y - gameState.bodies.star.y)**2);
-        gameState.period += 0.04*gameState.factor*(gameState.radiusMin/gameState.distanceToStar);
+        gameState.period += -5.69044513*Math.pow(10, -5)*gameState.distanceToStar + 0.0466270712;
         /* When the orbit has an eccentricity higher than 0, the orbit
          * should be adjusted to have the star in 1 of the foci. */
         gameState.bodies.planet.x = gameState.shift + (window.innerWidth/2) + Math.cos(gameState.period)*gameState.radiusMaj;
         gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(gameState.period)*gameState.radiusMin;
-        // gameState.planetTempText.text = 'Distance to star: ' + Math.round((gameState.distanceToStar)*10)/10;
+        gameState.planetTempText.text = 'Distance to star: ' + gameState.distanceToStar + '\nperiodUpdate: ' + (-1.15228655*Math.pow(10, -4)*gameState.distanceToStar + 0.0952292841);
     }
 
 }
