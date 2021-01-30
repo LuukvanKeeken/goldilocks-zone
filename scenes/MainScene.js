@@ -19,89 +19,97 @@ class MainScene extends Phaser.Scene{
         this.add.image(900, 100, 'background');
 
         /* Create slider and text for changing the radius of the orbit. */
-        this.img = this.add.image(window.innerWidth*0.25, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        gameState.bodies.sliders2 = this.add.image(window.innerWidth*0.25, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
         let font = 20*gameState.heightFactor;
         font = font.toString();
-        var orbitRadiusText = this.add.text(this.img.x, this.img.y + 20, 'Orbit radius: 3.75 AU', {
+        var orbitRadiusText = this.add.text(gameState.bodies.sliders2.x, gameState.bodies.sliders2.y + 20, 'Orbit radius: 3.750 AU', {
             fontSize: font + 'px',
             fill: '#ffffff',
             stroke: '#000000',
             strokeThickness: 2
         });
         centerText(orbitRadiusText, window.innerWidth*0.25);
-        this.img.sliderRadius = this.plugins.get('rexsliderplugin').add(this.img, {
+        gameState.bodies.sliders2.sliderRadius = this.plugins.get('rexsliderplugin').add(gameState.bodies.sliders2, {
             endPoints: [{
-                    x: this.img.x - 100,
-                    y: this.img.y
+                    x: gameState.bodies.sliders2.x - 100,
+                    y: gameState.bodies.sliders2.y
                 },
                 {
-                    x: this.img.x + 100,
-                    y: this.img.y
+                    x: gameState.bodies.sliders2.x + 100,
+                    y: gameState.bodies.sliders2.y
                 }
             ],
             value: 0.0835435217
         });
         this.add.graphics()
             .lineStyle(3, 0xffffff, 1)
-            .strokePoints(this.img.sliderRadius.endPoints);
+            .strokePoints(gameState.bodies.sliders2.sliderRadius.endPoints);
 
         /* Create slider and text for the eccentricity. */
-        this.img2 = this.add.image(window.innerWidth*0.5, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
-        var eccText = this.add.text(this.img2.x, this.img2.y + 20, 'Eccentricity: ' + Math.round(gameState.eccentricity*100)/100, {
+        gameState.bodies.sliders = this.add.image(window.innerWidth*0.5, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        var eccText = this.add.text(gameState.bodies.sliders.x, gameState.bodies.sliders.y + 20, 'Eccentricity: 0', {
             fontSize: font + 'px',
             fill: '#ffffff',
             stroke: '#000000',
             strokeThickness: 2
         });
         centerText(eccText, window.innerWidth*0.5);
-        this.img2.sliderEcc = this.plugins.get('rexsliderplugin').add(this.img2, {
+        gameState.bodies.sliders.sliderEcc = this.plugins.get('rexsliderplugin').add(gameState.bodies.sliders, {
             endPoints: [{
-                    x: this.img2.x - 100,
-                    y: this.img2.y
+                    x: gameState.bodies.sliders.x - 100,
+                    y: gameState.bodies.sliders.y
                 },
                 {
-                    x: this.img2.x + 100,
-                    y: this.img2.y
+                    x: gameState.bodies.sliders.x + 100,
+                    y: gameState.bodies.sliders.y
                 }
             ],
             value: 0
         });
         this.add.graphics()
             .lineStyle(3, 0xffffff, 1)
-            .strokePoints(this.img2.sliderEcc.endPoints);
+            .strokePoints(gameState.bodies.sliders.sliderEcc.endPoints);
 
         /* Create slider and text for the temperature/spectral class. */
-        this.img3 = this.add.image(window.innerWidth*0.75, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
-        var tempText = this.add.text(this.img3.x, this.img3.y + 20, 'Star temperature: ' + gameState.temperature + ' K (class ' + gameState.class + ')', {
+        gameState.bodies.sliders3 = this.add.image(window.innerWidth*0.75, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        var tempText = this.add.text(gameState.bodies.sliders3.x, gameState.bodies.sliders3.y + 20, 'Star temperature: ' + gameState.temperature + ' K (class ' + gameState.class + ')', {
             fontSize: font + 'px',
             fill: '#fcd440',
             stroke: '#000000',
             strokeThickness: 2
         });
         centerText(tempText, window.innerWidth*0.75);
-        this.img3.sliderTemp = this.plugins.get('rexsliderplugin').add(this.img3, {
+        gameState.bodies.sliders3.sliderTemp = this.plugins.get('rexsliderplugin').add(gameState.bodies.sliders3, {
             endPoints: [{
-                    x: this.img3.x - 100,
-                    y: this.img3.y
+                    x: gameState.bodies.sliders3.x - 100,
+                    y: gameState.bodies.sliders3.y
                 },
                 {
-                    x: this.img3.x + 100,
-                    y: this.img3.y
+                    x: gameState.bodies.sliders3.x + 100,
+                    y: gameState.bodies.sliders3.y
                 }
             ],
-            value: 0.0898
+            value: 0.0898404255
         });
         this.add.graphics()
             .lineStyle(3, 0xffffff, 1)
-            .strokePoints(this.img3.sliderTemp.endPoints);
+            .strokePoints(gameState.bodies.sliders3.sliderTemp.endPoints);
 
-        gameState.planetTempText = this.add.text(300, window.innerHeight/2, 'Distance to star: ' + gameState.distanceToStar, {
-            fontSize: font + 'px',
-            fill: '#ffffff',
-            stroke: '#000000',
-            strokeThickness: 2
-        });
+        // gameState.planetTempText = this.add.text(300, window.innerHeight/2, 'Distance to star: ' + gameState.distanceToStar, {
+        //     fontSize: font + 'px',
+        //     fill: '#ffffff',
+        //     stroke: '#000000',
+        //     strokeThickness: 2
+        // });
 
+        /* Function that resets the values of the sliders such that they
+            represent the actual values for Earth's orbit, and the temperature
+            of the Sun. */
+        var resetToEarthAndSun = function(){
+            gameState.bodies.sliders.sliderEcc.setValue(0.017);
+            gameState.bodies.sliders2.sliderRadius.setValue(0.018745161);
+            gameState.bodies.sliders3.sliderTemp.setValue(0.0898404255);
+        };
 
         /* Circles representing the Sun and its atmosphere. */
         gameState.bodies.starAtm1 = this.add.circle(window.innerWidth/2, window.innerHeight/2, 35*gameState.heightFactor, 0xfcd440);
@@ -184,20 +192,21 @@ class MainScene extends Phaser.Scene{
         }
         
         adjustRadius(0.0835435217);
+        // adjustRadius(0.018745161);
 
         /* When the user sets a new value for the orbital radius, the distance
          * of the planet to the star should change, as well as the radius of 
          * the ellipse representing the orbit. When the orbit is larger, the
          * speed at which the planet moves should be lower, so the gameState.factor
          * is also adjusted. */
-        this.img.sliderRadius.on('valuechange', function(newValue, prevValue){
+        gameState.bodies.sliders2.sliderRadius.on('valuechange', function(newValue, prevValue){
             adjustRadius(newValue);
         });
 
         /* When the user sets a new value for the eccentricity, the eccentricity
          * of the planet's orbit should change, as well as the eccentricity of
          * the white ellipse. The text under the slider is also updated. */
-        this.img2.sliderEcc.on('valuechange', function(newValue, prevValue){
+        gameState.bodies.sliders.sliderEcc.on('valuechange', function(newValue, prevValue){
             newValue = newValue*0.999;
             newValue = Math.floor(newValue*1000)/1000;
             eccText.text = 'Eccentricity: ' + newValue;
@@ -222,7 +231,7 @@ class MainScene extends Phaser.Scene{
             gameState.bodies.starAtm2.fillColor = newColor;
         };
 
-        this.img3.sliderTemp.on('valuechange', function(newValue, prevValue){
+        gameState.bodies.sliders3.sliderTemp.on('valuechange', function(newValue, prevValue){
             gameState.temperature = Math.floor(newValue*37600) + 2400;
 
             if (gameState.temperature >= 2400 && gameState.temperature < 3500){
@@ -267,6 +276,7 @@ class MainScene extends Phaser.Scene{
 
             tempText.text = 'Star temperature: ' + gameState.temperature.toFixed(0) + ' K (class ' + gameState.class + ')';
             centerText(tempText, window.innerWidth*0.75); 
+            
         });
 
 
