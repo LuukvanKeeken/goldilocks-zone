@@ -15,6 +15,7 @@ class MainScene extends Phaser.Scene{
         this.time.advancedTiming = true;
 
         this.load.image('resetSS', './media/set_to_solar_system.png');
+        this.load.image('question', './media/question_mark.png');
     }
 
     create(){
@@ -122,12 +123,7 @@ class MainScene extends Phaser.Scene{
 
         
 
-        // gameState.planetTempText = this.add.text(300, window.innerHeight/2, 'Distance to star: ' + gameState.distanceToStar, {
-        //     fontSize: font + 'px',
-        //     fill: '#ffffff',
-        //     stroke: '#000000',
-        //     strokeThickness: 2
-        // });
+        
 
         /* Function that resets the values of the sliders such that they
             represent the actual values for Earth's orbit, and the temperature
@@ -148,7 +144,6 @@ class MainScene extends Phaser.Scene{
                 for (var i = 48; i < 400; i++){
                     var majorAxis = Math.sqrt((i**2)/(1 - (gameState.eccentricity**2)));
                     if (gameState.bodies.star.x + majorAxis*(1 + gameState.eccentricity) > window.innerWidth - gameState.bodies.planet.radius - 10*(1/gameState.heightFactor)){
-                        console.log(i-1);
                         gameState.maxRadiusProp = (i-1)/(gameState.maxAllowedRadius*gameState.heightFactor);
                         limitFound = true;
                         break;
@@ -191,9 +186,6 @@ class MainScene extends Phaser.Scene{
             gameState.radiusMin = newRadius;
             gameState.radiusMaj = Math.sqrt(gameState.radiusMin**2/(1 - gameState.eccentricity**2));
             gameState.bodies.orbit.setSize(2*gameState.radiusMaj, 2*gameState.radiusMin);
-            console.log('Orbit diameter: ' + gameState.bodies.orbit.geom.height);
-            console.log('HeightFactor: ' + gameState.heightFactor);
-            console.log('Semi-minor axis: ' + gameState.maxRadiusProp*(56.5870829*newValue + 0.2044495157)) + ' AU';
 
             /* If the eccentricity is higher than 0, the orbit should be shifted.
              * Normal equation is shift = 0.5*a*c, but gameState.radiusMaj already
@@ -220,7 +212,7 @@ class MainScene extends Phaser.Scene{
          * the white ellipse. The text under the slider is also updated. */
         gameState.bodies.sliders.sliderEcc.on('valuechange', function(newValue, prevValue){
             newValue = newValue*0.999;
-            newValue = Math.floor(newValue*1000)/1000;
+            newValue = Math.round(newValue*1000)/1000;
             eccText.text = 'Eccentricity: ' + newValue;
             centerText(eccText, window.innerWidth*0.6);
             gameState.eccentricity = newValue;
@@ -298,11 +290,10 @@ class MainScene extends Phaser.Scene{
 
 
         gameState.buttons.resetSS = this.add.image(window.innerWidth*0.2, window.innerHeight - 100*gameState.heightFactor, 'resetSS').setInteractive();
-        gameState.buttons.resetSS.setScale(0.5);
+        gameState.buttons.resetSS.setScale(0.644*gameState.heightFactor);
         gameState.buttons.resetSSOutline = this.add.rectangle(gameState.buttons.resetSS.x, gameState.buttons.resetSS.y, gameState.buttons.resetSS.width, gameState.buttons.resetSS.height);
-        gameState.buttons.resetSSOutline.setScale(0.5);
+        gameState.buttons.resetSSOutline.setScale(0.644*gameState.heightFactor);
         gameState.buttons.resetSSOutline.setStrokeStyle(10, 0x000000);
-        console.log(gameState.buttons.resetSS);
 
         gameState.buttons.resetSS.on('pointerover', function(){
             gameState.buttons.resetSSOutline.setStrokeStyle(10, 0xffffff);
@@ -316,7 +307,66 @@ class MainScene extends Phaser.Scene{
             resetToEarthAndSun();
         });
         
-        
+        gameState.buttons.questionMark1 = this.add.image(window.innerWidth*0.4, window.innerHeight - 150*gameState.heightFactor, 'question').setScale(0.0644*gameState.heightFactor).setAlpha(0.75).setInteractive();
+        gameState.buttons.questionMark1.on('pointerover', function(){
+            gameState.buttons.questionMark1.setAlpha(1);
+            gameState.buttons.questionMark1.setScale(0.065688*gameState.heightFactor);
+        });
+        gameState.buttons.questionMark1.on('pointerout', function(){
+            gameState.buttons.questionMark1.setAlpha(0.75);
+            gameState.buttons.questionMark1.setScale(0.0644*gameState.heightFactor);
+        });
+
+        gameState.buttons.questionMark2 = this.add.image(window.innerWidth*0.8, window.innerHeight - 150*gameState.heightFactor, 'question').setScale(0.0644*gameState.heightFactor).setAlpha(0.75).setInteractive();
+        gameState.buttons.questionMark2.on('pointerover', function(){
+            gameState.buttons.questionMark2.setAlpha(1);
+            gameState.buttons.questionMark2.setScale(0.065688*gameState.heightFactor);
+        });
+        gameState.buttons.questionMark2.on('pointerout', function(){
+            gameState.buttons.questionMark2.setAlpha(0.75);
+            gameState.buttons.questionMark2.setScale(0.0644*gameState.heightFactor);
+        });
+        gameState.buttons.questionMark2.on('pointerdown', function(){
+
+        });
+
+        gameState.currentDistanceText = this.add.text(window.innerWidth*0.1, 50*gameState.heightFactor, 'Current distance: ', {
+            fontSize: font + 'px',
+            fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 2
+        });
+
+        gameState.innerBoundText = this.add.text(window.innerWidth*0.33333, 50*gameState.heightFactor, 'Inner limit: ', {
+            fontSize: font + 'px',
+            fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 2
+        });
+
+        gameState.outerBoundText = this.add.text(window.innerWidth*0.5, 50*gameState.heightFactor, 'Outer limit: ', {
+            fontSize: font + 'px',
+            fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 2
+        });
+
+        gameState.receivedPowerText = this.add.text(window.innerWidth*0.66667, 50*gameState.heightFactor, 'Received power: ', {
+            fontSize: font + 'px',
+            fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 2
+        });
+
+        gameState.planetTempText = this.add.text(window.innerWidth*0.83333, 50*gameState.heightFactor, 'Effective temperature: ', {
+            fontSize: font + 'px',
+            fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 2
+        });
+
+
+
     }
 
     update(){
@@ -337,6 +387,25 @@ class MainScene extends Phaser.Scene{
          * should be adjusted to have the star in 1 of the foci. */
         gameState.bodies.planet.x = gameState.shift + (window.innerWidth/2) + Math.cos(gameState.period)*gameState.radiusMaj;
         gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(gameState.period)*gameState.radiusMin;
+
+        var currentDistance = gameState.distanceToStar/((gameState.maxAllowedRadius*gameState.heightFactor)/8.75);
+        gameState.currentDistanceText.text = 'Current distance: ' + currentDistance.toFixed(3) + ' AU';
+        centerText(gameState.currentDistanceText, window.innerWidth*0.1);
+        var receivedPower = Math.pow(696340000/(currentDistance*1.495769871*Math.pow(10, 11)), 2)*5.67*Math.pow(10, -8)*Math.pow(gameState.temperature, 4);
+        gameState.planetTempText.text = 'Effective temperature: ' + (Math.pow((receivedPower*0.63/(4*5.67*Math.pow(10, -8))), 0.25) - 273.15).toFixed(2) + ' °C';
+        centerText(gameState.planetTempText, window.innerWidth*0.86);
+
+        var innerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(1455.26)/((1.49597871*Math.pow(10, 11)));
+        var outerLimit = 696340*Math.pow(10, 3)*Math.sqrt(5.67*Math.pow(10, -8))*Math.sqrt(Math.pow(gameState.temperature, 4))/Math.sqrt(698.6)/((1.49597871*Math.pow(10, 11)));
+        
+        gameState.innerBoundText.text = 'Inner limit: ' + innerLimit.toFixed(3) + ' AU';
+        gameState.outerBoundText.text = 'Outer limit: ' + outerLimit.toFixed(3) + ' AU';
+        centerText(gameState.innerBoundText, window.innerWidth*0.28);
+        centerText(gameState.outerBoundText, window.innerWidth*0.44);
+
+        gameState.receivedPowerText.text = 'Received power: ' + receivedPower.toFixed(1) + ' W/m^2';
+        centerText(gameState.receivedPowerText, window.innerWidth*0.63);
+
     }
 
 }
