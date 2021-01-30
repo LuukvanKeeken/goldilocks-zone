@@ -13,103 +13,12 @@ class MainScene extends Phaser.Scene{
 
         this.load.image('background', './media/space_background.jpg');
         this.time.advancedTiming = true;
+
+        this.load.image('resetSS', './media/set_to_solar_system.png');
     }
 
     create(){
         this.add.image(900, 100, 'background');
-
-        /* Create slider and text for changing the radius of the orbit. */
-        gameState.bodies.sliders2 = this.add.image(window.innerWidth*0.25, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
-        let font = 20*gameState.heightFactor;
-        font = font.toString();
-        var orbitRadiusText = this.add.text(gameState.bodies.sliders2.x, gameState.bodies.sliders2.y + 20, 'Orbit radius: 3.750 AU', {
-            fontSize: font + 'px',
-            fill: '#ffffff',
-            stroke: '#000000',
-            strokeThickness: 2
-        });
-        centerText(orbitRadiusText, window.innerWidth*0.25);
-        gameState.bodies.sliders2.sliderRadius = this.plugins.get('rexsliderplugin').add(gameState.bodies.sliders2, {
-            endPoints: [{
-                    x: gameState.bodies.sliders2.x - 100,
-                    y: gameState.bodies.sliders2.y
-                },
-                {
-                    x: gameState.bodies.sliders2.x + 100,
-                    y: gameState.bodies.sliders2.y
-                }
-            ],
-            value: 0.0835435217
-        });
-        this.add.graphics()
-            .lineStyle(3, 0xffffff, 1)
-            .strokePoints(gameState.bodies.sliders2.sliderRadius.endPoints);
-
-        /* Create slider and text for the eccentricity. */
-        gameState.bodies.sliders = this.add.image(window.innerWidth*0.5, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
-        var eccText = this.add.text(gameState.bodies.sliders.x, gameState.bodies.sliders.y + 20, 'Eccentricity: 0', {
-            fontSize: font + 'px',
-            fill: '#ffffff',
-            stroke: '#000000',
-            strokeThickness: 2
-        });
-        centerText(eccText, window.innerWidth*0.5);
-        gameState.bodies.sliders.sliderEcc = this.plugins.get('rexsliderplugin').add(gameState.bodies.sliders, {
-            endPoints: [{
-                    x: gameState.bodies.sliders.x - 100,
-                    y: gameState.bodies.sliders.y
-                },
-                {
-                    x: gameState.bodies.sliders.x + 100,
-                    y: gameState.bodies.sliders.y
-                }
-            ],
-            value: 0
-        });
-        this.add.graphics()
-            .lineStyle(3, 0xffffff, 1)
-            .strokePoints(gameState.bodies.sliders.sliderEcc.endPoints);
-
-        /* Create slider and text for the temperature/spectral class. */
-        gameState.bodies.sliders3 = this.add.image(window.innerWidth*0.75, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
-        var tempText = this.add.text(gameState.bodies.sliders3.x, gameState.bodies.sliders3.y + 20, 'Star temperature: ' + gameState.temperature + ' K (class ' + gameState.class + ')', {
-            fontSize: font + 'px',
-            fill: '#fcd440',
-            stroke: '#000000',
-            strokeThickness: 2
-        });
-        centerText(tempText, window.innerWidth*0.75);
-        gameState.bodies.sliders3.sliderTemp = this.plugins.get('rexsliderplugin').add(gameState.bodies.sliders3, {
-            endPoints: [{
-                    x: gameState.bodies.sliders3.x - 100,
-                    y: gameState.bodies.sliders3.y
-                },
-                {
-                    x: gameState.bodies.sliders3.x + 100,
-                    y: gameState.bodies.sliders3.y
-                }
-            ],
-            value: 0.0898404255
-        });
-        this.add.graphics()
-            .lineStyle(3, 0xffffff, 1)
-            .strokePoints(gameState.bodies.sliders3.sliderTemp.endPoints);
-
-        // gameState.planetTempText = this.add.text(300, window.innerHeight/2, 'Distance to star: ' + gameState.distanceToStar, {
-        //     fontSize: font + 'px',
-        //     fill: '#ffffff',
-        //     stroke: '#000000',
-        //     strokeThickness: 2
-        // });
-
-        /* Function that resets the values of the sliders such that they
-            represent the actual values for Earth's orbit, and the temperature
-            of the Sun. */
-        var resetToEarthAndSun = function(){
-            gameState.bodies.sliders.sliderEcc.setValue(0.017);
-            gameState.bodies.sliders2.sliderRadius.setValue(0.018745161);
-            gameState.bodies.sliders3.sliderTemp.setValue(0.0898404255);
-        };
 
         /* Circles representing the Sun and its atmosphere. */
         gameState.bodies.starAtm1 = this.add.circle(window.innerWidth/2, window.innerHeight/2, 35*gameState.heightFactor, 0xfcd440);
@@ -127,6 +36,109 @@ class MainScene extends Phaser.Scene{
 
         /* Circle representing the planet. */
         gameState.bodies.planet = this.add.circle(500, 500, 10*gameState.heightFactor, 0xffffff);
+
+        /* Ellipse representing the habitable zone. */
+        gameState.bodies.glz = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, 2*gameState.maxAllowedRadius*gameState.heightFactor, 2*gameState.maxAllowedRadius*gameState.heightFactor);
+        gameState.bodies.glz.setStrokeStyle(20, 0x00ff00, 0.3);
+
+
+
+        /* Create slider and text for changing the radius of the orbit. */
+        gameState.bodies.sliders2 = this.add.image(window.innerWidth*0.4, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        let font = 20*gameState.heightFactor;
+        font = font.toString();
+        var orbitRadiusText = this.add.text(gameState.bodies.sliders2.x, gameState.bodies.sliders2.y + 20, 'Orbit radius: 3.750 AU', {
+            fontSize: font + 'px',
+            fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 2
+        });
+        centerText(orbitRadiusText, window.innerWidth*0.4);
+        gameState.bodies.sliders2.sliderRadius = this.plugins.get('rexsliderplugin').add(gameState.bodies.sliders2, {
+            endPoints: [{
+                    x: gameState.bodies.sliders2.x - 100,
+                    y: gameState.bodies.sliders2.y
+                },
+                {
+                    x: gameState.bodies.sliders2.x + 100,
+                    y: gameState.bodies.sliders2.y
+                }
+            ],
+            value: 0.0835435217
+        });
+        this.add.graphics()
+            .lineStyle(3, 0xffffff, 1)
+            .strokePoints(gameState.bodies.sliders2.sliderRadius.endPoints);
+
+        /* Create slider and text for the eccentricity. */
+        gameState.bodies.sliders = this.add.image(window.innerWidth*0.6, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        var eccText = this.add.text(gameState.bodies.sliders.x, gameState.bodies.sliders.y + 20, 'Eccentricity: 0', {
+            fontSize: font + 'px',
+            fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 2
+        });
+        centerText(eccText, window.innerWidth*0.6);
+        gameState.bodies.sliders.sliderEcc = this.plugins.get('rexsliderplugin').add(gameState.bodies.sliders, {
+            endPoints: [{
+                    x: gameState.bodies.sliders.x - 100,
+                    y: gameState.bodies.sliders.y
+                },
+                {
+                    x: gameState.bodies.sliders.x + 100,
+                    y: gameState.bodies.sliders.y
+                }
+            ],
+            value: 0
+        });
+        this.add.graphics()
+            .lineStyle(3, 0xffffff, 1)
+            .strokePoints(gameState.bodies.sliders.sliderEcc.endPoints);
+
+        /* Create slider and text for the temperature/spectral class. */
+        gameState.bodies.sliders3 = this.add.image(window.innerWidth*0.8, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        var tempText = this.add.text(gameState.bodies.sliders3.x, gameState.bodies.sliders3.y + 20, 'Star temperature: ' + gameState.temperature + ' K (class ' + gameState.class + ')', {
+            fontSize: font + 'px',
+            fill: '#fcd440',
+            stroke: '#000000',
+            strokeThickness: 2
+        });
+        centerText(tempText, window.innerWidth*0.8);
+        gameState.bodies.sliders3.sliderTemp = this.plugins.get('rexsliderplugin').add(gameState.bodies.sliders3, {
+            endPoints: [{
+                    x: gameState.bodies.sliders3.x - 100,
+                    y: gameState.bodies.sliders3.y
+                },
+                {
+                    x: gameState.bodies.sliders3.x + 100,
+                    y: gameState.bodies.sliders3.y
+                }
+            ],
+            value: 0.0898404255
+        });
+        this.add.graphics()
+            .lineStyle(3, 0xffffff, 1)
+            .strokePoints(gameState.bodies.sliders3.sliderTemp.endPoints);
+
+        
+
+        // gameState.planetTempText = this.add.text(300, window.innerHeight/2, 'Distance to star: ' + gameState.distanceToStar, {
+        //     fontSize: font + 'px',
+        //     fill: '#ffffff',
+        //     stroke: '#000000',
+        //     strokeThickness: 2
+        // });
+
+        /* Function that resets the values of the sliders such that they
+            represent the actual values for Earth's orbit, and the temperature
+            of the Sun. */
+        var resetToEarthAndSun = function(){
+            gameState.bodies.sliders.sliderEcc.setValue(0.017);
+            gameState.bodies.sliders2.sliderRadius.setValue(0.018745161);
+            gameState.bodies.sliders3.sliderTemp.setValue(0.0898404255);
+        };
+
+        
 
         var calculateNewProportions = function(adjustedParam){
             if (adjustedParam === 'eccentricity'){
@@ -175,7 +187,7 @@ class MainScene extends Phaser.Scene{
             
             orbitRadiusText.text = 'Semi-minor axis: ' + (gameState.maxRadiusProp*(56.5870829*newValue + 0.2044495167)).toFixed(3) + ' AU';
             
-            centerText(orbitRadiusText, window.innerWidth*0.25);
+            centerText(orbitRadiusText, window.innerWidth*0.4);
             gameState.radiusMin = newRadius;
             gameState.radiusMaj = Math.sqrt(gameState.radiusMin**2/(1 - gameState.eccentricity**2));
             gameState.bodies.orbit.setSize(2*gameState.radiusMaj, 2*gameState.radiusMin);
@@ -210,7 +222,7 @@ class MainScene extends Phaser.Scene{
             newValue = newValue*0.999;
             newValue = Math.floor(newValue*1000)/1000;
             eccText.text = 'Eccentricity: ' + newValue;
-            centerText(eccText, window.innerWidth*0.5);
+            centerText(eccText, window.innerWidth*0.6);
             gameState.eccentricity = newValue;
 
             gameState.radiusMaj = Math.sqrt(Math.pow(gameState.radiusMin, 2)/(1 - Math.pow(gameState.eccentricity, 2)));
@@ -231,7 +243,7 @@ class MainScene extends Phaser.Scene{
             gameState.bodies.starAtm2.fillColor = newColor;
         };
 
-        gameState.bodies.sliders3.sliderTemp.on('valuechange', function(newValue, prevValue){
+        var changeStarAndHabZone = function(newValue){
             gameState.temperature = Math.floor(newValue*37600) + 2400;
 
             if (gameState.temperature >= 2400 && gameState.temperature < 3500){
@@ -275,13 +287,35 @@ class MainScene extends Phaser.Scene{
 
 
             tempText.text = 'Star temperature: ' + gameState.temperature.toFixed(0) + ' K (class ' + gameState.class + ')';
-            centerText(tempText, window.innerWidth*0.75); 
-            
+            centerText(tempText, window.innerWidth*0.8);
+        };
+
+        changeStarAndHabZone(0.0898404255);
+
+        gameState.bodies.sliders3.sliderTemp.on('valuechange', function(newValue, prevValue){
+            changeStarAndHabZone(newValue);
         });
 
 
-        gameState.bodies.glz = this.add.ellipse(window.innerWidth/2, window.innerHeight/2, 2*gameState.maxAllowedRadius*gameState.heightFactor, 2*gameState.maxAllowedRadius*gameState.heightFactor);
-        gameState.bodies.glz.setStrokeStyle(20, 0x00ff00, 0.3);
+        gameState.buttons.resetSS = this.add.image(window.innerWidth*0.2, window.innerHeight - 100*gameState.heightFactor, 'resetSS').setInteractive();
+        gameState.buttons.resetSS.setScale(0.5);
+        gameState.buttons.resetSSOutline = this.add.rectangle(gameState.buttons.resetSS.x, gameState.buttons.resetSS.y, gameState.buttons.resetSS.width, gameState.buttons.resetSS.height);
+        gameState.buttons.resetSSOutline.setScale(0.5);
+        gameState.buttons.resetSSOutline.setStrokeStyle(10, 0x000000);
+        console.log(gameState.buttons.resetSS);
+
+        gameState.buttons.resetSS.on('pointerover', function(){
+            gameState.buttons.resetSSOutline.setStrokeStyle(10, 0xffffff);
+        });
+
+        gameState.buttons.resetSS.on('pointerout', function(){
+            gameState.buttons.resetSSOutline.setStrokeStyle(10, 0x000000);
+        });
+
+        gameState.buttons.resetSS.on('pointerdown', function(){
+            resetToEarthAndSun();
+        });
+        
         
     }
 
