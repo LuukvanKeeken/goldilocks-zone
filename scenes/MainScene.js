@@ -49,7 +49,7 @@ class MainScene extends Phaser.Scene{
 
 
         /* Create slider and text for changing the radius of the orbit. */
-        gameState.bodies.sliders2 = this.add.image(window.innerWidth*0.4, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        gameState.bodies.sliders2 = this.add.image(window.innerWidth*0.275, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
         let font = 20*gameState.heightFactor;
         font = font.toString();
         var orbitRadiusText = this.add.text(gameState.bodies.sliders2.x, gameState.bodies.sliders2.y + 20, 'Orbit radius: 3.750 AU', {
@@ -58,7 +58,7 @@ class MainScene extends Phaser.Scene{
             stroke: '#000000',
             strokeThickness: 2
         });
-        centerText(orbitRadiusText, window.innerWidth*0.4);
+        centerText(orbitRadiusText, window.innerWidth*0.275);
         gameState.bodies.sliders2.sliderRadius = this.plugins.get('rexsliderplugin').add(gameState.bodies.sliders2, {
             endPoints: [{
                     x: gameState.bodies.sliders2.x - 100,
@@ -76,14 +76,14 @@ class MainScene extends Phaser.Scene{
             .strokePoints(gameState.bodies.sliders2.sliderRadius.endPoints);
 
         /* Create slider and text for the eccentricity. */
-        gameState.bodies.sliders = this.add.image(window.innerWidth*0.6, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        gameState.bodies.sliders = this.add.image(window.innerWidth*0.485, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
         var eccText = this.add.text(gameState.bodies.sliders.x, gameState.bodies.sliders.y + 20, 'Eccentricity: 0', {
             fontSize: font + 'px',
             fill: '#ffffff',
             stroke: '#000000',
             strokeThickness: 2
         });
-        centerText(eccText, window.innerWidth*0.6);
+        centerText(eccText, window.innerWidth*0.485);
         gameState.bodies.sliders.sliderEcc = this.plugins.get('rexsliderplugin').add(gameState.bodies.sliders, {
             endPoints: [{
                     x: gameState.bodies.sliders.x - 100,
@@ -101,14 +101,14 @@ class MainScene extends Phaser.Scene{
             .strokePoints(gameState.bodies.sliders.sliderEcc.endPoints);
 
         /* Create slider and text for the temperature/spectral class. */
-        gameState.bodies.sliders3 = this.add.image(window.innerWidth*0.8, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        gameState.bodies.sliders3 = this.add.image(window.innerWidth*0.69, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
         var tempText = this.add.text(gameState.bodies.sliders3.x, gameState.bodies.sliders3.y + 20, 'Star temperature: ' + gameState.temperature + ' K (class ' + gameState.class + ')', {
             fontSize: font + 'px',
             fill: '#fcd440',
             stroke: '#000000',
             strokeThickness: 2
         });
-        centerText(tempText, window.innerWidth*0.8);
+        centerText(tempText, window.innerWidth*0.69);
         gameState.bodies.sliders3.sliderTemp = this.plugins.get('rexsliderplugin').add(gameState.bodies.sliders3, {
             endPoints: [{
                     x: gameState.bodies.sliders3.x - 100,
@@ -126,8 +126,31 @@ class MainScene extends Phaser.Scene{
             .strokePoints(gameState.bodies.sliders3.sliderTemp.endPoints);
 
         
+        /* Create slider and text for the speed percentage. */
+        gameState.bodies.sliders4 = this.add.image(window.innerWidth*0.9, window.innerHeight - 100*gameState.heightFactor, 'dot').setScale(5*gameState.heightFactor, 5*gameState.heightFactor);
+        var speedText = this.add.text(gameState.bodies.sliders4.x, gameState.bodies.sliders4.y + 20, 'Speed: 100%', {
+            fontSize: font + 'px',
+            fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 2
+        });
+        centerText(speedText, window.innerWidth*0.9);
+        gameState.bodies.sliders4.sliderSpeed = this.plugins.get('rexsliderplugin').add(gameState.bodies.sliders4, {
+            endPoints: [{
+                    x: gameState.bodies.sliders4.x - 100,
+                    y: gameState.bodies.sliders4.y
+                },
+                {
+                    x: gameState.bodies.sliders4.x + 100,
+                    y: gameState.bodies.sliders4.y
+                }
+            ],
+            value: 1
+        });
+        this.add.graphics()
+            .lineStyle(3, 0xffffff, 1)
+            .strokePoints(gameState.bodies.sliders4.sliderSpeed.endPoints);
 
-        
 
         /* Function that resets the values of the sliders such that they
             represent the actual values for Earth's orbit, and the temperature
@@ -150,7 +173,7 @@ class MainScene extends Phaser.Scene{
             
             orbitRadiusText.text = 'Semi-minor axis: ' + (gameState.maxRadiusProp*(56.5870829*newValue + 0.2044495167)).toFixed(3) + ' AU';
             
-            centerText(orbitRadiusText, window.innerWidth*0.4);
+            centerText(orbitRadiusText, window.innerWidth*0.275);
             gameState.radiusMin = newRadius;
             gameState.radiusMaj = Math.sqrt(gameState.radiusMin**2/(1 - gameState.eccentricity**2));
             gameState.bodies.orbit.setSize(2*gameState.radiusMaj, 2*gameState.radiusMin);
@@ -180,7 +203,7 @@ class MainScene extends Phaser.Scene{
             newValue = newValue*0.999;
             newValue = Math.round(newValue*1000)/1000;
             eccText.text = 'Eccentricity: ' + newValue;
-            centerText(eccText, window.innerWidth*0.6);
+            centerText(eccText, window.innerWidth*0.485);
             gameState.eccentricity = newValue;
 
             gameState.radiusMaj = Math.sqrt(Math.pow(gameState.radiusMin, 2)/(1 - Math.pow(gameState.eccentricity, 2)));
@@ -248,18 +271,26 @@ class MainScene extends Phaser.Scene{
 
 
             tempText.text = 'Star temperature: ' + gameState.temperature.toFixed(0) + ' K (class ' + gameState.class + ')';
-            centerText(tempText, window.innerWidth*0.8);
+            centerText(tempText, window.innerWidth*0.69);
         };
 
         changeStarAndHabZone(0.0898404255);
 
+        /* Listener for the star temperature slider. */
         gameState.bodies.sliders3.sliderTemp.on('valuechange', function(newValue, prevValue){
             changeStarAndHabZone(newValue);
         });
 
+        /* Listener for the speed percentage slider. */
+        gameState.bodies.sliders4.sliderSpeed.on('valuechange', function(newValue, prevValue){
+            gameState.speedProp = newValue;
+            speedText.text = 'Speed: ' + (100*newValue).toFixed(0) + '%';
+            centerText(speedText, window.innerWidth*0.9);
+        });
+
 
         /* Reset button. ----------------------------------------------------------------------------------------------*/
-        gameState.buttons.resetSS = this.add.image(window.innerWidth*0.2, window.innerHeight - 100*gameState.heightFactor, 'resetSS').setInteractive();
+        gameState.buttons.resetSS = this.add.image(window.innerWidth*0.125, window.innerHeight - 100*gameState.heightFactor, 'resetSS').setInteractive();
         gameState.buttons.resetSS.setScale(0.644*gameState.heightFactor);
         gameState.buttons.resetSSOutline = this.add.rectangle(gameState.buttons.resetSS.x, gameState.buttons.resetSS.y, gameState.buttons.resetSS.width, gameState.buttons.resetSS.height);
         gameState.buttons.resetSSOutline.setScale(0.644*gameState.heightFactor);
@@ -292,7 +323,7 @@ class MainScene extends Phaser.Scene{
             gameState.explanationTexts.distance_and_eccentricity_outline.setVisible(!gameState.explanationTexts.distance_and_eccentricity_outline._visible);
         });
         
-        gameState.buttons.questionMark1 = this.add.image(window.innerWidth*0.4, window.innerHeight - 150*gameState.heightFactor, 'question').setScale(0.0644*gameState.heightFactor).setAlpha(0.75).setInteractive();
+        gameState.buttons.questionMark1 = this.add.image(window.innerWidth*0.38, window.innerHeight - 150*gameState.heightFactor, 'question').setScale(0.0644*gameState.heightFactor).setAlpha(0.75).setInteractive();
         gameState.buttons.questionMark1.on('pointerover', function(){
             gameState.buttons.questionMark1.setAlpha(1);
             gameState.buttons.questionMark1.setScale(0.065688*gameState.heightFactor);
@@ -333,7 +364,7 @@ class MainScene extends Phaser.Scene{
             gameState.explanationTexts.types_of_stars_outline.setVisible(!gameState.explanationTexts.types_of_stars_outline._visible);
         });
 
-        gameState.buttons.questionMark2 = this.add.image(window.innerWidth*0.8, window.innerHeight - 150*gameState.heightFactor, 'question').setScale(0.0644*gameState.heightFactor).setAlpha(0.75).setInteractive();
+        gameState.buttons.questionMark2 = this.add.image(window.innerWidth*0.69, window.innerHeight - 150*gameState.heightFactor, 'question').setScale(0.0644*gameState.heightFactor).setAlpha(0.75).setInteractive();
         gameState.buttons.questionMark2.on('pointerover', function(){
             gameState.buttons.questionMark2.setAlpha(1);
             gameState.buttons.questionMark2.setScale(0.065688*gameState.heightFactor);
@@ -374,7 +405,7 @@ class MainScene extends Phaser.Scene{
             gameState.explanationTexts.sources_outline.setVisible(!gameState.explanationTexts.sources_outline._visible);
         });
 
-        gameState.buttons.sources_button = this.add.image(window.innerWidth*0.1, window.innerHeight - 100*gameState.heightFactor, 'sources_button').setInteractive();
+        gameState.buttons.sources_button = this.add.image(window.innerWidth*0.05, window.innerHeight - 100*gameState.heightFactor, 'sources_button').setInteractive();
         gameState.buttons.sources_button.setScale(1.15*gameState.heightFactor);
         gameState.buttons.sources_buttonOutline = this.add.rectangle(gameState.buttons.sources_button.x, gameState.buttons.sources_button.y, gameState.buttons.sources_button.width, gameState.buttons.sources_button.height);
         gameState.buttons.sources_buttonOutline.setScale(1.15*gameState.heightFactor);
@@ -573,9 +604,9 @@ class MainScene extends Phaser.Scene{
         gameState.distanceToStar = Math.sqrt((gameState.bodies.planet.x- gameState.bodies.star.x)**2 
             + (gameState.bodies.planet.y - gameState.bodies.star.y)**2);
         if (gameState.distanceToStar > 1100*gameState.heightFactor){
-            gameState.period += -3.55382445*Math.pow(10, -9)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0400005331;
+            gameState.period += (-3.55382445*Math.pow(10, -9)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0400005331)*gameState.speedProp;
         } else {
-            gameState.period += -3.78947368*Math.pow(10, -5)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0456842105;
+            gameState.period += (-3.78947368*Math.pow(10, -5)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0456842105)*gameState.speedProp;
         }
         
         /* When the orbit has an eccentricity higher than 0, the orbit
