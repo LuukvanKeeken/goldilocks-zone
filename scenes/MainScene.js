@@ -418,7 +418,7 @@ class MainScene extends Phaser.Scene{
             gameState.explanationTexts.received_power_outline.setVisible(!gameState.explanationTexts.received_power_outline._visible);
         });
 
-        gameState.buttons.questionMark3 = this.add.image(window.innerWidth*0.865, 120*gameState.heightFactor, 'question').setScale(0.0644*gameState.heightFactor).setAlpha(0.75).setInteractive();
+        gameState.buttons.questionMark3 = this.add.image(window.innerWidth*0.63, 120*gameState.heightFactor, 'question').setScale(0.0644*gameState.heightFactor).setAlpha(0.75).setInteractive();
         gameState.buttons.questionMark3.on('pointerover', function(){
             gameState.buttons.questionMark3.setAlpha(1);
             gameState.buttons.questionMark3.setScale(0.065688*gameState.heightFactor);
@@ -501,7 +501,7 @@ class MainScene extends Phaser.Scene{
             gameState.explanationTexts.effective_temperature_outline.setVisible(!gameState.explanationTexts.effective_temperature_outline._visible);
         });
 
-        gameState.buttons.questionMark5 = this.add.image(window.innerWidth*0.63, 120*gameState.heightFactor, 'question').setScale(0.0644*gameState.heightFactor).setAlpha(0.75).setInteractive();
+        gameState.buttons.questionMark5 = this.add.image(window.innerWidth*0.865, 120*gameState.heightFactor, 'question').setScale(0.0644*gameState.heightFactor).setAlpha(0.75).setInteractive();
         gameState.buttons.questionMark5.on('pointerover', function(){
             gameState.buttons.questionMark5.setAlpha(1);
             gameState.buttons.questionMark5.setScale(0.065688*gameState.heightFactor);
