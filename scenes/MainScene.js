@@ -138,50 +138,14 @@ class MainScene extends Phaser.Scene{
             gameState.bodies.sliders3.sliderTemp.setValue(0.0898404255);
         };
 
-        
-
-        var calculateNewProportions = function(adjustedParam){
-            if (adjustedParam === 'eccentricity'){
-                /* Find the radius which in combination with the chosen
-                 * eccentricity will not let the orbit go off-screen. */
-                var limitFound = false;
-                for (var i = 48; i < 400; i++){
-                    var majorAxis = Math.sqrt((i**2)/(1 - (gameState.eccentricity**2)));
-                    if (gameState.bodies.star.x + majorAxis*(1 + gameState.eccentricity) > window.innerWidth - gameState.bodies.planet.radius - 10*(1/gameState.heightFactor)){
-                        gameState.maxRadiusProp = (i-1)/(gameState.maxAllowedRadius*gameState.heightFactor);
-                        limitFound = true;
-                        break;
-                    }
-                }
-                if (!limitFound){
-                    gameState.maxRadiusProp = 1;
-                }
-            } else if (adjustedParam === 'radius'){
-                /* Find the maximum eccentricity which in combination with the
-                 * chosen radius will not let the orbit go off-screen. */
-                for (var i = 0; i < 1000; i++){
-                    var majorAxis = Math.sqrt((gameState.radiusMin**2)/(1 - (i/1000)**2));
-                    if (gameState.bodies.star.x + majorAxis*(1 + i/1000) > window.innerWidth - gameState.bodies.planet.radius - 10*(1/gameState.heightFactor)){
-                        if (i > 0){
-                            gameState.maxEccProp = (i-1)/1000;
-                        } else {
-                            gameState.maxEccProp = 0;
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-        // calculateNewProportions('radius');
-        // calculateNewProportions('eccentricity');
-
+        /* Function that calculates how many pixels (?) are needed for a certain distance in AU. */
         var calculatePixels = function(distanceInAU){
             return (distanceInAU*((gameState.maxAllowedRadius*gameState.heightFactor)/8.75));            
         }
 
+        /* Function that adjusts the radius of the orbit based on a slider value between 0 and 1. */
         var adjustRadius = function(newValue){
             newValue *= 0.75;
-            // gameState.factor = 1.3 - (newValue*gameState.maxRadiusProp); //Not only newValue, because that only the denotes the place on the slider.
             var newRadius = calculatePixels(gameState.maxRadiusProp*(56.5860829*newValue + 0.2044495167));
             
             orbitRadiusText.text = 'Semi-minor axis: ' + (gameState.maxRadiusProp*(56.5870829*newValue + 0.2044495167)).toFixed(3) + ' AU';
@@ -196,11 +160,9 @@ class MainScene extends Phaser.Scene{
              * is 0.5*a. */
             gameState.shift = gameState.radiusMaj*gameState.eccentricity;
             gameState.bodies.orbit.x = gameState.bodies.star.x + gameState.shift;
-            // calculateNewProportions('radius');
         }
         
         adjustRadius(0.0835435217);
-        // adjustRadius(0.018745161);
 
         /* When the user sets a new value for the orbital radius, the distance
          * of the planet to the star should change, as well as the radius of 
@@ -229,9 +191,9 @@ class MainScene extends Phaser.Scene{
              * is 0.5*a. */
             gameState.shift = gameState.radiusMaj*gameState.eccentricity;
             gameState.bodies.orbit.x = gameState.bodies.star.x + gameState.shift;
-            // calculateNewProportions('eccentricity');
         });
 
+        /* Function that adjusts the color of the star and its atmosphere. */
         var recolorStar = function(newColor){
             gameState.bodies.star.fillColor = newColor;
             gameState.bodies.starAtm1.fillColor = newColor;
@@ -239,6 +201,9 @@ class MainScene extends Phaser.Scene{
             gameState.bodies.starAtm2.fillColor = newColor;
         };
 
+        /* Function that changes the text below the star temperature slider,
+            adjusts the color, and calculates the new size and position of
+            the habitable zone. */
         var changeStarAndHabZone = function(newValue){
             gameState.temperature = Math.floor(newValue*37600) + 2400;
 
@@ -609,10 +574,8 @@ class MainScene extends Phaser.Scene{
             + (gameState.bodies.planet.y - gameState.bodies.star.y)**2);
         if (gameState.distanceToStar > 1100*gameState.heightFactor){
             gameState.period += -3.55382445*Math.pow(10, -9)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0400005331;
-            // gameState.planetTempText.text = 'Distance to star: ' + gameState.distanceToStar + '\nperiodUpdate: ' + (-3.55382445*Math.pow(10, -9)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0400005331);
         } else {
             gameState.period += -3.78947368*Math.pow(10, -5)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0456842105;
-            // gameState.planetTempText.text = 'Distance to star: ' + gameState.distanceToStar + '\nperiodUpdate: ' + (-3.78947368*Math.pow(10, -5)*(1/gameState.heightFactor)*gameState.distanceToStar + 0.0456842105);
         }
         
         /* When the orbit has an eccentricity higher than 0, the orbit
@@ -620,6 +583,7 @@ class MainScene extends Phaser.Scene{
         gameState.bodies.planet.x = gameState.shift + (window.innerWidth/2) + Math.cos(gameState.period)*gameState.radiusMaj;
         gameState.bodies.planet.y = (window.innerHeight/2) + Math.sin(gameState.period)*gameState.radiusMin;
 
+        /* Calculating and printing the various values portrayed at the top. */
         var currentDistance = gameState.distanceToStar/((gameState.maxAllowedRadius*gameState.heightFactor)/8.75);
         gameState.currentDistanceText.text = 'Current distance: ' + currentDistance.toFixed(3) + ' AU';
         centerText(gameState.currentDistanceText, window.innerWidth*0.1);
