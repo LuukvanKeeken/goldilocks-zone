@@ -19,7 +19,8 @@ const gameState = {
     heightFactor: 0, 
     maxAllowedRadius: 350,
     minAllowedRadius: 40, 
-    buttons: {}
+    buttons: {},
+    explanationTexts: {}
 }
 
 function centerText(text, centerCoordinate){

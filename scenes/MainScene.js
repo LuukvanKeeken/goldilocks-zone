@@ -7,15 +7,19 @@ class MainScene extends Phaser.Scene{
     preload(){
         var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexsliderplugin.min.js';
         this.load.plugin('rexsliderplugin', url, true);
-
         url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/white-dot.png';      
         this.load.image('dot', url);
-
         this.load.image('background', './media/space_background.jpg');
-        this.time.advancedTiming = true;
-
         this.load.image('resetSS', './media/set_to_solar_system.png');
         this.load.image('question', './media/question_mark.png');
+        this.load.image('types_of_stars', './media/types_of_stars.png');
+        this.load.image('sources', './media/sources.png');
+        this.load.image('sources_button', './media/sources_button.png');
+        this.load.image('received_power', './media/received_power.png');
+        this.load.image('habitable_zone', './media/habitable_zone.png');
+        this.load.image('effective_temperature', './media/effective_temperature.png');
+        this.load.image('distance_and_eccentricity', './media/distance_and_eccentricity.png');
+        this.time.advancedTiming = true;
     }
 
     create(){
@@ -289,6 +293,7 @@ class MainScene extends Phaser.Scene{
         });
 
 
+        /* Reset button. ----------------------------------------------------------------------------------------------*/
         gameState.buttons.resetSS = this.add.image(window.innerWidth*0.2, window.innerHeight - 100*gameState.heightFactor, 'resetSS').setInteractive();
         gameState.buttons.resetSS.setScale(0.644*gameState.heightFactor);
         gameState.buttons.resetSSOutline = this.add.rectangle(gameState.buttons.resetSS.x, gameState.buttons.resetSS.y, gameState.buttons.resetSS.width, gameState.buttons.resetSS.height);
@@ -298,13 +303,28 @@ class MainScene extends Phaser.Scene{
         gameState.buttons.resetSS.on('pointerover', function(){
             gameState.buttons.resetSSOutline.setStrokeStyle(10, 0xffffff);
         });
-
         gameState.buttons.resetSS.on('pointerout', function(){
             gameState.buttons.resetSSOutline.setStrokeStyle(10, 0x000000);
         });
-
         gameState.buttons.resetSS.on('pointerdown', function(){
             resetToEarthAndSun();
+        });
+        
+
+        /* Distance and eccentricity button and text. -----------------------------------------------------------------*/
+        gameState.explanationTexts.distance_and_eccentricity = this.add.image(window.innerWidth/2, window.innerHeight/2, 'distance_and_eccentricity').setScale(0.7*gameState.heightFactor).setOrigin(0.5).setVisible(false).setInteractive();
+        gameState.explanationTexts.distance_and_eccentricity_outline = this.add.rectangle(gameState.explanationTexts.distance_and_eccentricity.x, gameState.explanationTexts.distance_and_eccentricity.y, gameState.explanationTexts.distance_and_eccentricity.width, gameState.explanationTexts.distance_and_eccentricity.height);
+        gameState.explanationTexts.distance_and_eccentricity_outline.setScale(0.7*gameState.heightFactor).setStrokeStyle(10, 0x000000).setVisible(false);
+
+        gameState.explanationTexts.distance_and_eccentricity.on('pointerover', function(){
+            gameState.explanationTexts.distance_and_eccentricity_outline.setStrokeStyle(10, 0xffffff);
+        });
+        gameState.explanationTexts.distance_and_eccentricity.on('pointerout', function(){
+            gameState.explanationTexts.distance_and_eccentricity_outline.setStrokeStyle(10, 0x000000);
+        });
+        gameState.explanationTexts.distance_and_eccentricity.on('pointerdown', function(){
+            gameState.explanationTexts.distance_and_eccentricity.setVisible(!gameState.explanationTexts.distance_and_eccentricity._visible);
+            gameState.explanationTexts.distance_and_eccentricity_outline.setVisible(!gameState.explanationTexts.distance_and_eccentricity_outline._visible);
         });
         
         gameState.buttons.questionMark1 = this.add.image(window.innerWidth*0.4, window.innerHeight - 150*gameState.heightFactor, 'question').setScale(0.0644*gameState.heightFactor).setAlpha(0.75).setInteractive();
@@ -315,6 +335,27 @@ class MainScene extends Phaser.Scene{
         gameState.buttons.questionMark1.on('pointerout', function(){
             gameState.buttons.questionMark1.setAlpha(0.75);
             gameState.buttons.questionMark1.setScale(0.0644*gameState.heightFactor);
+        });
+        gameState.buttons.questionMark1.on('pointerdown', function(){
+            gameState.explanationTexts.distance_and_eccentricity.setVisible(!gameState.explanationTexts.distance_and_eccentricity._visible);
+            gameState.explanationTexts.distance_and_eccentricity_outline.setVisible(!gameState.explanationTexts.distance_and_eccentricity_outline._visible);
+        });
+
+
+        /* Types of stars button and text. ----------------------------------------------------------------------------------------*/
+        gameState.explanationTexts.types_of_stars = this.add.image(window.innerWidth/2, window.innerHeight/2, 'types_of_stars').setScale(0.7*gameState.heightFactor).setOrigin(0.5).setVisible(false).setInteractive();
+        gameState.explanationTexts.types_of_stars_outline = this.add.rectangle(gameState.explanationTexts.types_of_stars.x, gameState.explanationTexts.types_of_stars.y, gameState.explanationTexts.types_of_stars.width, gameState.explanationTexts.types_of_stars.height);
+        gameState.explanationTexts.types_of_stars_outline.setScale(0.7*gameState.heightFactor).setStrokeStyle(10, 0x000000).setVisible(false);
+
+        gameState.explanationTexts.types_of_stars.on('pointerover', function(){
+            gameState.explanationTexts.types_of_stars_outline.setStrokeStyle(10, 0xffffff);
+        });
+        gameState.explanationTexts.types_of_stars.on('pointerout', function(){
+            gameState.explanationTexts.types_of_stars_outline.setStrokeStyle(10, 0x000000);
+        });
+        gameState.explanationTexts.types_of_stars.on('pointerdown', function(){
+            gameState.explanationTexts.types_of_stars.setVisible(!gameState.explanationTexts.types_of_stars._visible);
+            gameState.explanationTexts.types_of_stars_outline.setVisible(!gameState.explanationTexts.types_of_stars_outline._visible);
         });
 
         gameState.buttons.questionMark2 = this.add.image(window.innerWidth*0.8, window.innerHeight - 150*gameState.heightFactor, 'question').setScale(0.0644*gameState.heightFactor).setAlpha(0.75).setInteractive();
@@ -327,8 +368,61 @@ class MainScene extends Phaser.Scene{
             gameState.buttons.questionMark2.setScale(0.0644*gameState.heightFactor);
         });
         gameState.buttons.questionMark2.on('pointerdown', function(){
-
+            gameState.explanationTexts.types_of_stars.setVisible(!gameState.explanationTexts.types_of_stars._visible);
+            gameState.explanationTexts.types_of_stars_outline.setVisible(!gameState.explanationTexts.types_of_stars_outline._visible);
         });
+
+
+        /* Sources button and text. -------------------------------------------------------------------------------------------------*/
+        gameState.explanationTexts.sources = this.add.image(window.innerWidth/2, window.innerHeight/2, 'sources').setScale(0.9*gameState.heightFactor).setOrigin(0.5).setVisible(false).setInteractive();
+        gameState.explanationTexts.sources_outline = this.add.rectangle(gameState.explanationTexts.sources.x, gameState.explanationTexts.sources.y, gameState.explanationTexts.sources.width, gameState.explanationTexts.sources.height);
+        gameState.explanationTexts.sources_outline.setScale(0.9*gameState.heightFactor).setStrokeStyle(10, 0x000000).setVisible(false);
+
+        gameState.explanationTexts.sources.on('pointerover', function(){
+            gameState.explanationTexts.sources_outline.setStrokeStyle(10, 0xffffff);
+        });
+        gameState.explanationTexts.sources.on('pointerout', function(){
+            gameState.explanationTexts.sources_outline.setStrokeStyle(10, 0x000000);
+        });
+        gameState.explanationTexts.sources.on('pointerdown', function(){
+            gameState.explanationTexts.sources.setVisible(!gameState.explanationTexts.sources._visible);
+            gameState.explanationTexts.sources_outline.setVisible(!gameState.explanationTexts.sources_outline._visible);
+        });
+
+        gameState.buttons.sources_button = this.add.image(window.innerWidth*0.1, window.innerHeight - 100*gameState.heightFactor, 'sources_button').setInteractive();
+        gameState.buttons.sources_button.setScale(1.15*gameState.heightFactor);
+        gameState.buttons.sources_buttonOutline = this.add.rectangle(gameState.buttons.sources_button.x, gameState.buttons.sources_button.y, gameState.buttons.sources_button.width, gameState.buttons.sources_button.height);
+        gameState.buttons.sources_buttonOutline.setScale(1.15*gameState.heightFactor);
+        gameState.buttons.sources_buttonOutline.setStrokeStyle(4, 0x000000);
+
+        gameState.buttons.sources_button.on('pointerover', function(){
+            gameState.buttons.sources_buttonOutline.setStrokeStyle(4, 0xffffff);
+        });
+        gameState.buttons.sources_button.on('pointerout', function(){
+            gameState.buttons.sources_buttonOutline.setStrokeStyle(4, 0x000000);
+        });
+        gameState.buttons.sources_button.on('pointerdown', function(){
+            gameState.explanationTexts.sources.setVisible(!gameState.explanationTexts.sources._visible);
+            gameState.explanationTexts.sources_outline.setVisible(!gameState.explanationTexts.sources_outline._visible);
+        });
+
+
+
+        
+        // gameState.buttons.questionMark3 = this.add.image(window.innerWidth*0.8, window.innerHeight - 150*gameState.heightFactor, 'question').setScale(0.0644*gameState.heightFactor).setAlpha(0.75).setInteractive();
+        // gameState.buttons.questionMark3.on('pointerover', function(){
+        //     gameState.buttons.questionMark3.setAlpha(1);
+        //     gameState.buttons.questionMark3.setScale(0.065688*gameState.heightFactor);
+        // });
+        // gameState.buttons.questionMark3.on('pointerout', function(){
+        //     gameState.buttons.questionMark3.setAlpha(0.75);
+        //     gameState.buttons.questionMark3.setScale(0.0644*gameState.heightFactor);
+        // });
+        // gameState.buttons.questionMark3.on('pointerdown', function(){
+        //     gameState.explanationTexts.sources.setVisible(!gameState.explanationTexts.sources._visible);
+        //     gameState.explanationTexts.sources_outline.setVisible(!gameState.explanationTexts.sources_outline._visible);
+        // });
+
 
         gameState.currentDistanceText = this.add.text(window.innerWidth*0.1, 50*gameState.heightFactor, 'Current distance: ', {
             fontSize: font + 'px',
